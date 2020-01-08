@@ -1,4 +1,6 @@
 #include <string>
+#include <iostream>
+
 using namespace std;
 class Client
 {
@@ -6,8 +8,7 @@ private:
 	string mClientFullName;
 	string mClientLoginUsername;
 	string mClientLoginPassword;
-	long mClientBlance;
-	long mClientAccountId;
+    long mClientBlance;
 public:
 	Client() {
 		mClientLoginPassword = "asd123";
@@ -29,9 +30,9 @@ public:
 	void setClientBlance() {
 		cin >> mClientBlance;
 		while (cin.fail()) {
-			cout << "Cheak your entry is must be NUMBERS only";
+            cout << "Check your entry is must be NUMBERS only";
 			cin.clear();
-			cin.ignore(256, '/n');
+            cin.ignore(256, '\n');
 			cin >> mClientBlance;	
 		}
 		cout << mClientBlance;

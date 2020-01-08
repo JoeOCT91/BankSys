@@ -148,10 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BankSys.cpp" />
+    <ClCompile Include="core.cpp" />
+    <ClCompile Include="gui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.h" />
+    <ClInclude Include="core.h" />
     <ClInclude Include="Employee.h" />
+    <ClInclude Include="gui.h" />
     <ClInclude Include="LoginData.h" />
   </ItemGroup>
   <ItemGroup>
