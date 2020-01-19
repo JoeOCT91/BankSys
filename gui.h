@@ -1,9 +1,7 @@
-#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
-#include "client.h"
 #include "core.h"
 
 
@@ -15,11 +13,15 @@ public:
 	void Menu_employee();
 	void Menu_login();
 	int login_now(vector<LoginData>& login_data);
+	void show_add_new_client();
 
 private:
 	void show_client_options();
 	void show_employee_options();
 	void show_manager_options();
+	string CLIENTSFILE = "clients.txt";
+	string USERSFILE = "users.txt";
+
 	core c;
 };
 
