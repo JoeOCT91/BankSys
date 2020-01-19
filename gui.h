@@ -8,11 +8,11 @@
 class gui
 {
 public:
-	void Menu_client();
+	void Menu_client(LoginData& userLoginData);
 	void Menu_manager();
 	void Menu_employee();
 	void Menu_login();
-	int login_now(vector<LoginData>& login_data);
+	LoginData login_now(vector<LoginData>& login_data);
 	void show_add_new_client();
 
 private:

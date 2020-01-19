@@ -20,7 +20,7 @@ private:
 public:
 	vector<LoginData> get_login_creditentials();
 	int append2Clients(string& fname, Client& new_client);
-	int append2users(string& file_name, Client& new_client);
+	int append2users(string& file_name, LoginData& new_client);
 	long get_last_Client_ID();
 	string get_last_line_in_text_file();
 	bool text_is_empty();
@@ -32,6 +32,9 @@ public:
 	long wait_blance_input();
 	long get_blance_to_long(string& selection);
 	string set_login_username(string& fullName);
+	vector<Client> get_clients_data();
+	int get_client_index(LoginData& userLoginData, vector<Client>& clientsData);
+
 
 };
 

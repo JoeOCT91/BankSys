@@ -12,8 +12,16 @@ vector<string> core::read_a_file_to_vector_of_strings(string fileName)
     {
         while (!file.eof())
         {
-            file >> lineOfData;
-            vector_of_strings.push_back(lineOfData);
+            getline(file, lineOfData);
+
+
+            if (lineOfData != "") {
+                vector_of_strings.push_back(lineOfData);
+            }
+
+
+
+            //file >> lineOfData;
         }
         file.close();
     }
@@ -21,6 +29,7 @@ vector<string> core::read_a_file_to_vector_of_strings(string fileName)
     {
         cout << "Unable to open file: " << fileName << endl;
     }
+    cout << vector_of_strings.size() << endl;
     return vector_of_strings;
 }
 
@@ -122,6 +131,60 @@ vector<LoginData> core::get_login_creditentials() {
     }
     return loginData;
 }
+
+
+//grap all clients data from rext file ............
+//this function will use it to print all clients information in employee window .. worth time to creat it :)
+vector<Client> core::get_clients_data() {
+
+    vector<Client> clientsData;
+    vector<string> clientsAsStrings = read_a_file_to_vector_of_strings(CLIENTSFILE);
+    size_t user_count = clientsAsStrings.size();
+
+    string::size_type pos = 0;
+    string::size_type prev = 0;
+
+    for (int i = 0; i < user_count; i++)
+    {
+        Client client;
+        string clientData = clientsAsStrings.at(i);
+        pos = clientData.find(SEP, prev);
+        //Get client ID as String then convert it to Long
+        string clientID = clientData.substr(prev, pos - prev);
+        client.setClientAccountId(stoll(clientID));
+        prev = pos + 1;
+        pos = clientData.find(SEP, prev);
+        client.setClientFullName(clientData.substr(prev, pos - prev));
+        prev = pos + 1;
+        //get client blance as String then convert it to Long
+        string clientBlance = clientData.substr(prev, pos - prev);
+        client.setClientBlance(stoll(clientBlance));
+        prev = pos + 1;
+        client.setClientLoginUsername(clientData.substr(prev));
+
+        clientsData.push_back(client);
+        pos = 0;
+        prev = 0;
+    }
+
+
+    return clientsData;
+}
+// grab client data from clients data ......
+int core::get_client_index(LoginData& userLoginData, vector<Client>& clientsData){
+
+    size_t clients_count = clientsData.size();
+
+    for (int i = 0; i < clients_count; i++) {
+
+        if (userLoginData.getLoginuser() == clientsData[i].getClientUsername()) {
+            return i;
+        }
+
+
+    }
+}
+
 
 
 int core::string_to_int(string& s)
@@ -239,7 +302,8 @@ int core::append2Clients(string& file_name, Client& new_client)
     ofstream myfile(file_name, ios::app);
     if (myfile.is_open())
     {
-        myfile << new_client.getClientId() << SEP << new_client.getClientFullName() << SEP << new_client.getClientBlance() <<endl;
+        myfile << new_client.getClientId() << SEP << new_client.getClientFullName() 
+            << SEP << new_client.getClientBlance()<< SEP << new_client.getClientUsername() <<endl;
         myfile.close();
         return 0;
     }
@@ -252,12 +316,13 @@ int core::append2Clients(string& file_name, Client& new_client)
     return 0;
 }
 
-int core::append2users(string& file_name, Client& new_client)
+int core::append2users(string& file_name, LoginData& loginData)
 {
     ofstream myfile(file_name, ios::app);
     if (myfile.is_open())
     {
-        myfile << SEP << endl;
+        myfile << loginData.getLoginuser() << SEP << loginData.getLoginPassword()<< SEP << loginData.getAccountType()
+          << SEP << loginData.getIsFristLogin() << endl;
         myfile.close();
         return 0;
     }

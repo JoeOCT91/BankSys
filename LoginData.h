@@ -7,7 +7,11 @@ private:
 	string mLoginUser;
 	string mLoginPassword;
 	string mAccountType;
+	bool mIsFristLogin;
 public:
+	LoginData() {
+		mLoginPassword = "asd123";
+	}
 	void setLoginUser(string loginUser) {
 		mLoginUser = loginUser;
 	}
@@ -17,6 +21,9 @@ public:
 	void setAccountType(string accountType) {
 		mAccountType = accountType;
 	}
+	void SetIsFristLogin(bool isFristLogin) {
+		mIsFristLogin = isFristLogin;
+	}
 	string getLoginuser() {
 		return mLoginUser;
 	}
@@ -25,6 +32,9 @@ public:
 	}
 	string getAccountType() {
 		return mAccountType;
+	}
+	bool getIsFristLogin() {
+		return mIsFristLogin;
 	}
 };
 

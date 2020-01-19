@@ -2,45 +2,8 @@
 
 using namespace std;
 
-int gui::login_now(vector<LoginData>& login_data)
-{
-    string username = "";
-    string password = "";
-    string accountType = "";
-    size_t users_count = login_data.size();
-
-    cout << "Please enter your username: ";
-    cin >> username;
-
-    for (int i = 0; i < users_count; i++) {
-        if (username == login_data[i].getLoginuser()) {
-            cout << "Please enter your password: ";
-            cin >> password;
-            while (password != login_data[i].getLoginPassword()) {
-                cout << "INVALID PASSWORD RETRY" << endl;
-                cout << "Enter your password Again: ";
-                cin >> password;
-            }
-            accountType = login_data[i].getAccountType();
-            return  c.string_to_int(accountType);
-        }
-    }
-    cout << "This username you enterd not exist, TRY AGAIN";
-    login_now(login_data);
-
-    return -1;
-}
 
 
-void gui::show_client_options() {
-    cout << "Welcome you can manage your account from here" << endl;
-    cout << "0- exit" << endl;
-    cout << "1- Account blance" << endl;
-    cout << "2- Deposite" << endl;
-    cout << "3- With" << endl;
-    cout << "4- change user" << endl;
-    cout << "Enter your choice :";
-}
 
 void gui::show_employee_options() {
     cout << "Welcome you can manage bank clients from here" << endl;
@@ -83,10 +46,15 @@ void gui::show_add_new_client() {
     new_client.printClientInf();
     
 
-    new_client_full_info = new_client.getClientFullName() + "," + new_client.getClientBlance();
 
+    loginData.setAccountType("0");
+    loginData.setLoginUser(new_client.getClientUsername());
+    loginData.SetIsFristLogin(true);
+
+    //Write the new client data to users and clients files....
+    //Defult password set to "asd123"  
     c.append2Clients(CLIENTSFILE, new_client);
-    c.append2users(USERSFILE, new_client);
+    c.append2users(USERSFILE, loginData);
     
     
 
@@ -158,9 +126,18 @@ void gui::Menu_employee()
 
     Menu_employee();
 }
+// CLIENT SECTION #############################
 
-void gui::Menu_client()
+void gui::Menu_client(LoginData& userLoginData)
 {
+    vector<Client> clientsData = c.get_clients_data();
+    int thisClientIndex = c.get_client_index(userLoginData, clientsData);
+    Client currentClient;
+
+
+    //most cheak if it frist login by this user......
+    //grap this client information ........ HOW !!!!!
+
     show_client_options();
     int selected_option = c.wait_user_input();
 
@@ -170,7 +147,7 @@ void gui::Menu_client()
         exit(0);
         break;
     case 1:
-        cout << "balance" << endl;
+        cout << "1- Full account information" << endl;
         break;
     case 2:
         cout << "deposit" << endl;
@@ -185,13 +162,56 @@ void gui::Menu_client()
         break;
     }
 
-    Menu_client();
+    Menu_client(userLoginData);
 }
+
+void gui::show_client_options() {
+    cout << "Welcome you can manage your account from here" << endl;
+    cout << "0- exit" << endl;
+    cout << "1- Full account information" << endl;
+    cout << "2- Account blance" << endl;
+    cout << "3- With" << endl;
+    cout << "4- change user" << endl;
+    cout << "Enter your choice :";
+}
+
+
+LoginData gui::login_now(vector<LoginData>& login_data)
+{
+    string username = "";
+    string password = "";
+    string accountType = "";
+    size_t users_count = login_data.size();
+
+    cout << "Please enter your username: ";
+    cin >> username;
+
+    for (int i = 0; i < users_count; i++) {
+        if (username == login_data[i].getLoginuser()) {
+            cout << "Please enter your password: ";
+            cin >> password;
+            while (password != login_data[i].getLoginPassword()) {
+                cout << "INVALID PASSWORD RETRY" << endl;
+                cout << "Enter your password Again: ";
+                cin >> password;
+            }
+            accountType = login_data[i].getAccountType();
+            return  login_data[i];
+        }
+    }
+    cout << "This username you enterd not exist, TRY AGAIN";
+    login_now(login_data);
+
+    exit;
+}
+
+
+
 void gui::Menu_login()
 {
     vector<LoginData> loginData = c.get_login_creditentials();
-
-    int account_type = login_now(loginData);
+    LoginData userLoginData = login_now(loginData);
+    int account_type = stoi(userLoginData.getAccountType());
     
     c.set_account_type(account_type);
 
@@ -201,7 +221,7 @@ void gui::Menu_login()
     switch (c.get_account_type())
     {
     case 0:
-        Menu_client();
+        Menu_client(userLoginData);
         break;
     case 1:
         Menu_employee();

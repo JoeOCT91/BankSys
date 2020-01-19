@@ -9,7 +9,6 @@ class Client {
 private:
 	string mClientFullName;
 	string mClientLoginUsername;
-	string mClientLoginPassword;
 	long mClientAccountID;
     long mClientBlance;
 	int mClientId;
@@ -18,21 +17,17 @@ private:
 
 public:
 	Client() {
-		//set defult password for any created client must change at frist login
-		mClientLoginPassword = "asd123";
 		mFristLogin = true;
-
 	}
 	
 	void setClientFullName(string clientFullName) {
 		mClientFullName = clientFullName;
 	}
 
-	// This function to set login username for new clients  .... Done and tested
 	void setClientLoginUsername(string clientLoginUsername) {
 		mClientLoginUsername = clientLoginUsername;
 	}
-	// This function to set Account ID .... Almost Done in testing progress
+
 	void setClientAccountId(long clientAccountID) {
 
 		mClientAccountID = clientAccountID;
@@ -40,9 +35,7 @@ public:
 	void setClientBlance(long clientBlance) {
 		mClientBlance = clientBlance;
 	}
-	void resetClientLoginPassword() {
-		mClientLoginPassword = "asd123";
-	}
+
 	 
 	string  getClientFullName() {
 		return mClientFullName;
@@ -70,9 +63,6 @@ public:
 		}
 
 	}
-
-
-
 
 };
 
