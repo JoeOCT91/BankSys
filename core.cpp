@@ -98,7 +98,7 @@ long core::get_last_Client_ID() {
 
     pos = lastLine.find(SEP, prev);
     string s = lastLine.substr(prev, pos - prev);
-    lastId = stol(s);
+    lastId = stoll(s);
 
     return lastId;
          
@@ -123,8 +123,10 @@ vector<LoginData> core::get_login_creditentials() {
         pos = userData.find(SEP, prev);
         data.setLoginPassword(userData.substr(prev, pos - prev));
         prev = pos + 1;
-        data.setAccountType(userData.substr(prev));
-
+        pos = userData.find(SEP, prev);
+        data.setAccountType(userData.substr(prev, pos - prev));
+        prev = pos + 1;
+        data.SetIsFristLogin(string_to_bool(userData.substr(prev)));
         loginData.push_back(data);
         pos = 0;
         prev = 0;
@@ -133,7 +135,7 @@ vector<LoginData> core::get_login_creditentials() {
 }
 
 
-//grap all clients data from rext file ............
+//grap all clients data from text file ............
 //this function will use it to print all clients information in employee window .. worth time to creat it :)
 vector<Client> core::get_clients_data() {
 
@@ -156,11 +158,17 @@ vector<Client> core::get_clients_data() {
         pos = clientData.find(SEP, prev);
         client.setClientFullName(clientData.substr(prev, pos - prev));
         prev = pos + 1;
+        pos = clientData.find(SEP, prev);
         //get client blance as String then convert it to Long
         string clientBlance = clientData.substr(prev, pos - prev);
         client.setClientBlance(stoll(clientBlance));
         prev = pos + 1;
+        pos = clientData.find(SEP, prev);
         client.setClientLoginUsername(clientData.substr(prev));
+        prev = pos + 1;
+        int isLogin = stoi(clientData.substr(prev));
+        client.setFristLogin(isLogin);
+
 
         clientsData.push_back(client);
         pos = 0;
@@ -177,12 +185,53 @@ int core::get_client_index(LoginData& userLoginData, vector<Client>& clientsData
 
     for (int i = 0; i < clients_count; i++) {
 
-        if (userLoginData.getLoginuser() == clientsData[i].getClientUsername()) {
+        if (userLoginData.getLoginuser() == clientsData.at(i).getClientUsername()) {
             return i;
         }
-
+        
 
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+int core::wait_user_input() {
+    string theInput;
+    int i = 1;
+    int inputAsInt = get_input_to_digit(theInput, i);
+
+    while (cin.fail() || cin.eof() || inputAsInt == -1 || theInput.find_first_not_of("0123456789") != std::string::npos) {
+        cin.clear();
+        inputAsInt = get_input_to_digit(theInput, i);
+    }
+    return  inputAsInt;
+
+}
+long long core::wait_user_input(string errorMessage) {
+    string theInput;
+    long l = 1;
+    long long inputAsLong = get_input_to_digit(theInput, l);
+
+    while (cin.fail() || cin.eof() || inputAsLong == -1 || theInput.find_first_not_of("0123456789") != std::string::npos) {
+        
+        cout << errorMessage;
+        cin.clear();
+        inputAsLong = get_input_to_digit(theInput, l);
+    }
+    return  inputAsLong;
+}
+
+int core::get_input_to_digit(string& selection, int i)
+{
+    getline(cin, selection, '\n');
+    return string_to_int(selection);
+
+}
+long long core::get_input_to_digit(string& selection, long l)
+{
+    getline(cin, selection, '\n');
+    return string_to_long(selection);
+
 }
 
 
@@ -201,11 +250,11 @@ int core::string_to_int(string& s)
 }
 
 
-long core::string_to_long(string& s)
+long long core::string_to_long(string& s)
 {
-    long ret;
+    long long ret;
     try {
-        ret = stol(s);
+        ret = stoll(s);
     }
     catch (...)
     {
@@ -215,46 +264,13 @@ long core::string_to_long(string& s)
 }
 
 
-int core::get_selection_to_int(string& selection)
-{
-    getline(cin, selection, '\n');
-    return string_to_int(selection);
-
-}
-int core::wait_user_input() {
-    string theInput;
-
-    int inputAsInt = get_selection_to_int(theInput);
-
-    while (cin.fail() || cin.eof() || inputAsInt == -1 || theInput.find_first_not_of("0123456789") != std::string::npos) {
-        cin.clear();
-        inputAsInt = get_selection_to_int(theInput);
-    }
-    return  inputAsInt;
-
-}
 
 
 
 
-long core::get_blance_to_long(string& selection)
-{
-    getline(cin, selection, '\n');
-    return string_to_long(selection);
 
-}
-long core::wait_blance_input() {
-    string theInput;
 
-    long inputAsLong = get_blance_to_long(theInput);
 
-    while (cin.fail() || cin.eof() || inputAsLong == -1 || theInput.find_first_not_of("0123456789") != std::string::npos) {
-        cin.clear();
-        inputAsLong = get_blance_to_long(theInput);
-    }
-    return  inputAsLong;
-
-}
 
 
 
@@ -276,11 +292,54 @@ string core::set_login_username(string& fullName) {
 
 
 
+LoginData core::changeUssrPassword(LoginData userLoginData) {
+    string oldPassword = userLoginData.getLoginPassword();
+    string newPassword;
+    cout << "Please enter your new password: ";
+    cin.clear();
+    cin.ignore();
+    getline(cin, newPassword);
+    userLoginData.setLoginPassword(newPassword);
+    userLoginData.SetIsFristLogin(false);
+    // rewrite this user data to USERS.txt in the same line by replacing the old line,
+    // line start with LOGINUSERNAME >> will find it then replace it 
+    // need to creat function that read text file then replace the line;
+    read_text_file_then_replace_a_line(USERSFILE, userLoginData.getLoginuser(), oldPassword, newPassword);
+    return userLoginData;
+}
 
 
+void core::read_text_file_then_replace_a_line(string fileName, string searchFor, string replaceThis, string replaceTo) {
+    
+    char file_name[20];
+    strcpy_s(file_name, fileName.c_str());
 
+    ifstream file(fileName);
+    ofstream TEMPFILE("temp.txt", ios_base::app);
+    string lineOfStream;
+    if (file.is_open())
+    {
+        while (getline(file, lineOfStream))
+        {
+            
 
+            if (lineOfStream.find(searchFor) != std::string::npos) {
+                
+                lineOfStream.replace(lineOfStream.find(replaceThis), replaceThis.length(), replaceTo);
 
+            }
+
+            TEMPFILE << lineOfStream << endl;
+        
+        }
+        file.close();
+        TEMPFILE.close();
+        remove(file_name);
+        rename("temp.txt", file_name);
+
+    }
+
+}
 
 
 
@@ -297,13 +356,85 @@ int core::get_account_type()
     return account_type;
 }
 
+
+
+int core::showAccountBlance(Client& currentclient) {
+    system("cls");
+    cout << currentclient.getClientFullName() << endl;
+    cout << "Your blance is: " << currentclient.getClientBlance() << endl << endl;
+    cout << "press 1 to main menu  2 to exit" << endl;
+    cout << "Choose: ";
+    int i = wait_user_input();
+
+    return i;
+
+}
+
+void core::Withdrawal(vector<Client>& clientsData, Client& currentClient, int index) {
+
+
+    long long blance = stoll(currentClient.getClientBlance());
+    string replaceThis = currentClient.getClientBlance();
+    string replaceTO;
+
+    string errorMessage = "Error";
+
+    cout << blance << endl;
+    cout << "Please enter amount of money you want to withdraw: ";
+    long long amount = wait_user_input(errorMessage) ;
+    while (amount > blance) {
+        amount = wait_user_input(errorMessage);
+    }
+    blance -= amount;
+    replaceTO = to_string(blance);
+    
+    read_text_file_then_replace_a_line(CLIENTSFILE, currentClient.getClientUsername(), replaceThis, replaceTO);
+    currentClient.setClientBlance(blance);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool core::string_to_bool(string s) {
+    bool r = false;
+    if (s == "true") {
+        r = true;
+    }
+    else if (s == "false")  {
+        r = false;
+    }
+    return r;
+}
+
+string core::bool_to_string(bool b) {
+    string r= "";
+    if (b) {
+        r = "true";
+    }
+    else if (!b) {
+        r = "false";
+    }
+    return r;
+}
+
+
 int core::append2Clients(string& file_name, Client& new_client)
 {
     ofstream myfile(file_name, ios::app);
     if (myfile.is_open())
     {
-        myfile << new_client.getClientId() << SEP << new_client.getClientFullName() 
-            << SEP << new_client.getClientBlance()<< SEP << new_client.getClientUsername() <<endl;
+        myfile << endl <<new_client.getClientId() << SEP << new_client.getClientFullName() << SEP
+            << new_client.getClientBlance() << SEP << new_client.getClientUsername() << new_client.isFristLogin();
         myfile.close();
         return 0;
     }
@@ -318,11 +449,12 @@ int core::append2Clients(string& file_name, Client& new_client)
 
 int core::append2users(string& file_name, LoginData& loginData)
 {
+
     ofstream myfile(file_name, ios::app);
     if (myfile.is_open())
     {
-        myfile << loginData.getLoginuser() << SEP << loginData.getLoginPassword()<< SEP << loginData.getAccountType()
-          << SEP << loginData.getIsFristLogin() << endl;
+        myfile << endl << loginData.getLoginuser() << SEP << loginData.getLoginPassword() << SEP << loginData.getAccountType()
+            << SEP << bool_to_string(loginData.getIsFristLogin()) ;
         myfile.close();
         return 0;
     }
@@ -334,4 +466,3 @@ int core::append2users(string& file_name, LoginData& loginData)
 
     return 0;
 }
-

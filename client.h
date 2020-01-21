@@ -10,13 +10,14 @@ private:
 	string mClientFullName;
 	string mClientLoginUsername;
 	long mClientAccountID;
-    long mClientBlance;
-	int mClientId;
+    long long mClientBlance;
 	bool mFristLogin;
 	
 
 public:
 	Client() {
+		mClientAccountID = 0;
+		mClientBlance = 0;
 		mFristLogin = true;
 	}
 	
@@ -32,11 +33,13 @@ public:
 
 		mClientAccountID = clientAccountID;
 	}
-	void setClientBlance(long clientBlance) {
+	void setClientBlance(long long clientBlance) {
 		mClientBlance = clientBlance;
 	}
-
-	 
+	void setFristLogin(bool fristLogin) {
+		mFristLogin = fristLogin;
+	}
+ 
 	string  getClientFullName() {
 		return mClientFullName;
 	}
@@ -49,18 +52,24 @@ public:
 	string getClientId() {
 		return to_string(mClientAccountID);
 	}
+	bool isFristLogin() {
+		return mFristLogin;
+	}
 
 	void printClientInf() {
+
 		cout << "Full client information:" << endl;
 		cout << "Client name: " << mClientFullName << endl;
+		cout << "Account ID: " << mClientAccountID << endl;
 		cout << "Client login username: " << mClientLoginUsername << endl;
 		if (mFristLogin) {
-			cout << "Client login password: asd123 " << endl;
-
+			cout << "Client login password: asd123 \"Default password must change at frist login\" " << endl;
 		}
 		else {
 			cout << "Client login password : This client password is private" << endl;
 		}
+		cout << "Client Blance: " << mClientBlance << endl;
+
 
 	}
 

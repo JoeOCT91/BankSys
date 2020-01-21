@@ -8,7 +8,7 @@
 class gui
 {
 public:
-	void Menu_client(LoginData& userLoginData);
+	void Menu_client(LoginData& userLoginData, vector<LoginData>& loginData);
 	void Menu_manager();
 	void Menu_employee();
 	void Menu_login();

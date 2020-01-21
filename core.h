@@ -11,7 +11,15 @@ class core
 {
 private:
 	vector<string> read_a_file_to_vector_of_strings(string fileName);
-	int get_selection_to_int(string& selection);
+	int get_input_to_digit(string& selection, int i);
+
+	long long get_input_to_digit(string& selection, long l);
+
+	int string_to_int(string& s);
+	long long string_to_long(string& s);
+
+
+
 	int account_type = -1;
 	char SEP = ',';
 	string USERSFILE = "users.txt";
@@ -24,16 +32,25 @@ public:
 	long get_last_Client_ID();
 	string get_last_line_in_text_file();
 	bool text_is_empty();
-	int string_to_int(string& s);
-	long string_to_long(string& s);
-	int wait_user_input();
 	void set_account_type(int& t);
 	int get_account_type();
-	long wait_blance_input();
-	long get_blance_to_long(string& selection);
 	string set_login_username(string& fullName);
 	vector<Client> get_clients_data();
 	int get_client_index(LoginData& userLoginData, vector<Client>& clientsData);
+	LoginData changeUssrPassword(LoginData userLoginData);
+	void Withdrawal(vector<Client>& clientsData, Client& currentClient, int index);
+
+
+	void read_text_file_then_replace_a_line(string fileName, string searchFor, string replaceThis, string replaceTo);
+	int showAccountBlance(Client& currentclient);
+	bool string_to_bool(string s);
+
+	string bool_to_string(bool b);
+
+
+	int wait_user_input();
+	long long wait_user_input(string errorMessage);
+
 
 
 };

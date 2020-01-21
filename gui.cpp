@@ -36,9 +36,16 @@ void gui::show_add_new_client() {
         clientId += 1;
         new_client.setClientAccountId(clientId);
     }
-    
+
+    string errorMessage = "Entry must be a number \nPlease enter account opening blance: ";
     cout << "Please enter account opening blance: ";
-    long blance = c.wait_blance_input();
+    long long blance = c.wait_user_input(errorMessage);
+    if (blance < 5000) {
+        system("cls");
+        cout << "opening blance must be 5000 " << endl;
+        cout << "Please enter account opening blance: ";
+        long long blance = c.wait_user_input(errorMessage);
+    }
 
 
 
@@ -55,7 +62,6 @@ void gui::show_add_new_client() {
     //Defult password set to "asd123"  
     c.append2Clients(CLIENTSFILE, new_client);
     c.append2users(USERSFILE, loginData);
-    
     
 
 }
@@ -128,16 +134,20 @@ void gui::Menu_employee()
 }
 // CLIENT SECTION #############################
 
-void gui::Menu_client(LoginData& userLoginData)
-{
+void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
+{   //All clients data stored in vector 
     vector<Client> clientsData = c.get_clients_data();
-    int thisClientIndex = c.get_client_index(userLoginData, clientsData);
-    Client currentClient;
+    // this varibale hold current client index in clientsdata, will use it to edit data 
+    int thisClientIndexInClientsData = c.get_client_index(userLoginData, clientsData);
+    //Current client data any change will store in this object and push it to the vector in the same index 
+    Client currentClient = clientsData.at(thisClientIndexInClientsData);
 
+    //most cheak if it the frist login by this user......
+    if (userLoginData.getIsFristLogin()) {
+        c.changeUssrPassword(userLoginData);
+    }
 
-    //most cheak if it frist login by this user......
-    //grap this client information ........ HOW !!!!!
-
+    // Note to change bool to string and reverse it 
     show_client_options();
     int selected_option = c.wait_user_input();
 
@@ -147,22 +157,29 @@ void gui::Menu_client(LoginData& userLoginData)
         exit(0);
         break;
     case 1:
-        cout << "1- Full account information" << endl;
+
+        currentClient.printClientInf();
         break;
     case 2:
-        cout << "deposit" << endl;
+        c.showAccountBlance(currentClient);
         break;
     case 3:
-        cout << "with" << endl;
+         c.Withdrawal(clientsData, currentClient, thisClientIndexInClientsData);
         break;
     case 4:
+        ;
+        break;
+    case 5:
+        Menu_login();
+        break;
+    case 6:
         Menu_login();
         break;
     default:
         break;
     }
 
-    Menu_client(userLoginData);
+    Menu_client(userLoginData, loginData);
 }
 
 void gui::show_client_options() {
@@ -170,8 +187,9 @@ void gui::show_client_options() {
     cout << "0- exit" << endl;
     cout << "1- Full account information" << endl;
     cout << "2- Account blance" << endl;
-    cout << "3- With" << endl;
-    cout << "4- change user" << endl;
+    cout << "3- Withdrawal" << endl;
+    cout << "4- Transfer" << endl;
+    cout << "5- Change password" << endl;
     cout << "Enter your choice :";
 }
 
@@ -221,7 +239,7 @@ void gui::Menu_login()
     switch (c.get_account_type())
     {
     case 0:
-        Menu_client(userLoginData);
+        Menu_client(userLoginData, loginData);
         break;
     case 1:
         Menu_employee();
