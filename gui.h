@@ -16,7 +16,7 @@ public:
 	void show_add_new_client();
 
 private:
-	void show_client_options();
+	void show_client_options(Client& currentClient);
 	void show_employee_options();
 	void show_manager_options();
 	string CLIENTSFILE = "clients.txt";

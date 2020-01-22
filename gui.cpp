@@ -148,29 +148,32 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
     }
 
     // Note to change bool to string and reverse it 
-    show_client_options();
+    system("cls");
+    show_client_options(currentClient);
     int selected_option = c.wait_user_input();
 
     switch (selected_option)
     {
     case 0:
-        exit(0);
-        break;
+    
     case 1:
-
+        system("cls");
         currentClient.printClientInf();
         break;
     case 2:
+        system("cls");
         c.showAccountBlance(currentClient);
         break;
     case 3:
+         system("cls");
          c.Withdrawal(clientsData, currentClient, thisClientIndexInClientsData);
         break;
     case 4:
-        ;
+        system("cls");
+        c.transferTo(clientsData, currentClient, thisClientIndexInClientsData);
         break;
     case 5:
-        Menu_login();
+        exit(0);
         break;
     case 6:
         Menu_login();
@@ -182,9 +185,8 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
     Menu_client(userLoginData, loginData);
 }
 
-void gui::show_client_options() {
-    cout << "Welcome you can manage your account from here" << endl;
-    cout << "0- exit" << endl;
+void gui::show_client_options(Client& currentClient) {
+    cout << "Welcome " << currentClient.getClientFullName() << " you can manage your account from here" << endl;
     cout << "1- Full account information" << endl;
     cout << "2- Account blance" << endl;
     cout << "3- Withdrawal" << endl;

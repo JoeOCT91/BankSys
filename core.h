@@ -40,8 +40,21 @@ public:
 	LoginData changeUssrPassword(LoginData userLoginData);
 	void Withdrawal(vector<Client>& clientsData, Client& currentClient, int index);
 
+	void transferTo(vector<Client>& clientsData, Client& currentClient, int index);
+
+	long long checkBlance(Client& currentClient);
+
+	long long checkId(vector<Client>& clientsData, int& index);
+
+	long long checkBlance();
+
+	long long checkBlance(string& userInput);
+
 
 	void read_text_file_then_replace_a_line(string fileName, string searchFor, string replaceThis, string replaceTo);
+	void saveDataToClients(string fileName, vector<Client> clients);
+	void saveData(string fileName, vector<Client> clients);
+	void saveData(string fileName, vector<Client> clients, string replaceThis, string replaceTo);
 	int showAccountBlance(Client& currentclient);
 	bool string_to_bool(string s);
 

@@ -72,7 +72,7 @@ string core::get_last_line_in_text_file() {
                 keepLooping = false;                // Stop at the current position.
             }
             else {                                  // If the data was neither a newline nor at the 0 byte
-                fin.seekg(-2, ios_base::cur);        // Move to the front of that data, then to the front of the data before it
+                fin.seekg(-2, ios_base::cur);       // Move to the front of that data, then to the front of the data before it
             }
         }
 
@@ -341,7 +341,30 @@ void core::read_text_file_then_replace_a_line(string fileName, string searchFor,
 
 }
 
+void core::saveDataToClients(string fileName, vector<Client> clients) {
 
+
+    ofstream myfile(fileName);
+    string lineOfData;
+    if (myfile.is_open())
+    {
+        for(int i = 0; i < clients.size(); i++)
+        {
+            lineOfData = clients.at(i).getClientId() + SEP;
+            lineOfData += clients.at(i).getClientFullName() + SEP;
+            lineOfData += clients.at(i).getClientBlance() + SEP;
+            lineOfData += clients.at(i).getClientUsername();
+
+
+            myfile << lineOfData << endl;
+
+        }
+        myfile.close();
+     
+
+    }
+
+}
 
 
 
@@ -379,7 +402,7 @@ void core::Withdrawal(vector<Client>& clientsData, Client& currentClient, int in
 
     string errorMessage = "Error";
 
-    cout << blance << endl;
+    cout << "Your Curent Blance is: " << blance << endl;
     cout << "Please enter amount of money you want to withdraw: ";
     long long amount = wait_user_input(errorMessage) ;
     while (amount > blance) {
@@ -388,16 +411,53 @@ void core::Withdrawal(vector<Client>& clientsData, Client& currentClient, int in
     blance -= amount;
     replaceTO = to_string(blance);
     
-    read_text_file_then_replace_a_line(CLIENTSFILE, currentClient.getClientUsername(), replaceThis, replaceTO);
     currentClient.setClientBlance(blance);
+    clientsData.at(index) = currentClient;
+    saveDataToClients(CLIENTSFILE, clientsData);
+}
+void core::transferTo(vector<Client>& clientsData, Client& currentClient, int index) {
+    long long blance = stoll(currentClient.getClientBlance());
+    long long amountToTransfer;
+    long long transferToId;
+    int transferToIndex;
+    string userInput;
+    cout << "Your Curent Blance is: " << blance << endl;
+    cout << "Please enter the amount of money you want to transfer: ";
+    amountToTransfer = checkBlance(currentClient);
+    transferToId = checkId(clientsData, transferToIndex);
+
+
+
 }
 
 
+long long core::checkBlance(Client& currentClient) {
+    long long amountToTransfer;
+    string errorMessage ="Your entry is !INVALID PLEASE EMTER NUMBERS ONLY \nPlease enter the amount of money you want to transfer: ";
+    amountToTransfer = wait_user_input(errorMessage);
+    if (amountToTransfer > stoll((currentClient.getClientBlance()))) {
+        cout << "Your Curent Blance is: " << currentClient.getClientBlance() << endl;
+        cout << "Your entry is greater than your blance\n";
+        checkBlance(currentClient);
+    } 
 
+    return amountToTransfer;
+}
+long long core::checkId(vector<Client>& clientsData,int& index ){
 
-
-
-
+    long long transferToId;
+    string errorMessage = "Your entry is !INVALID PLEASE EMTER NUMBERS ONLY \nPlease enter account id that you want to transfer to: ";
+    cout << "Please enter account id that you want to transfer to: ";
+    transferToId = wait_user_input(errorMessage);
+    for (int i = 0; i < clientsData.size(); i++) {
+        if (stoll(clientsData[i].getClientId()) == transferToId) {
+            index = i;
+            return transferToId;
+        }
+    }
+    cout << "INVLID ACCOUNT ID\n";
+    checkId(clientsData, index);
+}
 
 
 
@@ -433,8 +493,9 @@ int core::append2Clients(string& file_name, Client& new_client)
     ofstream myfile(file_name, ios::app);
     if (myfile.is_open())
     {
-        myfile << endl <<new_client.getClientId() << SEP << new_client.getClientFullName() << SEP
-            << new_client.getClientBlance() << SEP << new_client.getClientUsername() << new_client.isFristLogin();
+        myfile << new_client.getClientId() << SEP << new_client.getClientFullName() << SEP
+            << new_client.getClientBlance() << SEP << new_client.getClientUsername() 
+            << new_client.isFristLogin() << endl;
         myfile.close();
         return 0;
     }
