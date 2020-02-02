@@ -343,7 +343,6 @@ void core::read_text_file_then_replace_a_line(string fileName, string searchFor,
 
 void core::saveDataToClients(string fileName, vector<Client> clients) {
 
-
     ofstream myfile(fileName);
     string lineOfData;
     if (myfile.is_open())
@@ -354,20 +353,30 @@ void core::saveDataToClients(string fileName, vector<Client> clients) {
             lineOfData += clients.at(i).getClientFullName() + SEP;
             lineOfData += clients.at(i).getClientBlance() + SEP;
             lineOfData += clients.at(i).getClientUsername();
-
-
             myfile << lineOfData << endl;
-
         }
         myfile.close();
-     
-
     }
 
 }
+// alean walker .. faded << where are you now ... Were you only imaginary >>
+void core::saveDataToUsers(string fileName, vector<LoginData> loginData) {
 
-
-
+	ofstream myfile(fileName);
+	string lineOfData;
+	if (myfile.is_open())
+	{
+		for (int i = 0; i < loginData.size(); i++)
+		{
+			lineOfData = loginData.at(i).getLoginuser() + SEP;
+			lineOfData += loginData.at(i).getLoginPassword() + SEP;
+			lineOfData += loginData.at(i).getAccountType() + SEP;
+			lineOfData += bool_to_string(loginData.at(i).getIsFristLogin);
+			myfile << lineOfData << endl;
+		}
+		myfile.close();
+	}
+}
 
 void core::set_account_type(int& t)
 {
@@ -379,8 +388,24 @@ int core::get_account_type()
     return account_type;
 }
 
-
-
+// Alwayes split functions to smaller functions its better :) 
+int core::userReturnOExit() {
+	cout << "press 1 to main menu  2 to exit" << endl;
+	cout << "Choose: ";
+	int i = checkSelectionRange(2);
+	if (i == 2) {
+		exit(0);
+	}
+	else {
+		return i;
+	}
+}
+// to print account full information ...
+void core::fullAccountInfo(Client& currentClient) {
+	currentClient.printClientInf();
+	userReturnOExit();
+}
+// to print account blance ...
 int core::showAccountBlance(Client& currentclient) {
     system("cls");
     cout << currentclient.getClientFullName() << endl;
@@ -388,18 +413,13 @@ int core::showAccountBlance(Client& currentclient) {
     cout << "press 1 to main menu  2 to exit" << endl;
     cout << "Choose: ";
     int i = wait_user_input();
-
     return i;
-
 }
-
+// to make awithdrawal ...
 void core::Withdrawal(vector<Client>& clientsData, Client& currentClient, int index) {
-
-
     long long blance = stoll(currentClient.getClientBlance());
     string replaceThis = currentClient.getClientBlance();
     string replaceTO;
-
     string errorMessage = "Error";
 
     cout << "Your Curent Blance is: " << blance << endl;
@@ -415,6 +435,20 @@ void core::Withdrawal(vector<Client>& clientsData, Client& currentClient, int in
     clientsData.at(index) = currentClient;
     saveDataToClients(CLIENTSFILE, clientsData);
 }
+//Deposite money to account ... 
+void core::Deposite(vector<Client>& clientsData, Client& currentClient, int index) {
+	long long depositeAmount;
+	long long blance = stoll(clientsData.at(index).getClientBlance());
+	string error = "INVALID INPUT Please enter digits only \nEnter the amount you want to deposite: ";
+
+	cout << "Please enter the amount you want to deposite: ";
+	depositeAmount = wait_user_input(error);
+	blance += depositeAmount;
+	clientsData.at(index).setClientBlance(blance);
+	saveDataToClients(CLIENTSFILE, clientsData);
+
+}
+// Transfer money from account to other ... 
 void core::transferTo(vector<Client>& clientsData, Client& currentClient, int index) {
     long long blance = stoll(currentClient.getClientBlance());
     long long amountToTransfer;
@@ -425,9 +459,36 @@ void core::transferTo(vector<Client>& clientsData, Client& currentClient, int in
     cout << "Please enter the amount of money you want to transfer: ";
     amountToTransfer = checkBlance(currentClient);
     transferToId = checkId(clientsData, transferToIndex);
+}
+// change account password will use it in the 3 sections of the program "Manager - employee - client " ...
+void core::changeUserPassword(vector<LoginData>& loginData, LoginData& userLoginData) {
+	string newPassword;
+	cout << "Please enter your new password: ";
+	cin.clear();
+	cin.ignore();
+	getline(cin, newPassword);
+	userLoginData.setLoginPassword(newPassword);
+	userLoginData.SetIsFristLogin(false);
+
+	for (int i = 0; i < loginData.size(); i++) {
+		if (loginData.at(i).getLoginuser() == userLoginData.getLoginuser()) {
+			loginData.at(i) = userLoginData;
+		}
+	}
 
 
 
+
+
+	// rewrite this user data to USERS.txt in the same line by replacing the old line,
+	// line start with LOGINUSERNAME >> will find it then replace it 
+	// need to creat function that read text file then replace the line;
+	//read_text_file_then_replace_a_line(USERSFILE, userLoginData.getLoginuser(), oldPassword, newPassword);
+
+	//the new function ..
+	
+	saveDataToUsers(USERSFILE, loginData);
+	return userLoginData;
 }
 
 
@@ -458,11 +519,6 @@ long long core::checkId(vector<Client>& clientsData,int& index ){
     cout << "INVLID ACCOUNT ID\n";
     checkId(clientsData, index);
 }
-
-
-
-
-
 
 
 bool core::string_to_bool(string s) {
@@ -504,13 +560,11 @@ int core::append2Clients(string& file_name, Client& new_client)
         cout << "Unable to open file";
         return 1;
     }
-
     return 0;
 }
 
 int core::append2users(string& file_name, LoginData& loginData)
 {
-
     ofstream myfile(file_name, ios::app);
     if (myfile.is_open())
     {
@@ -526,4 +580,15 @@ int core::append2users(string& file_name, LoginData& loginData)
     }
 
     return 0;
+}
+// Good job ... dont be lazy :) <3 <3
+int core::checkSelectionRange(int to) {
+	int selection = wait_user_input();
+	if (selection < 1 || selection > to) {
+		cout << "Your selection is out of range\nEnter your choice: ";
+		selection = wait_user_input();
+	}
+	else {
+		return selection;
+	}
 }

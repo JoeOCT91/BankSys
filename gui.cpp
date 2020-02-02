@@ -2,7 +2,10 @@
 
 using namespace std;
 
+//My Notes (Yousef Mohamed)
 
+// need to creat counction name success choicess exit or return main menu
+// need to creat function to cheak user select option is in range ...
 
 
 void gui::show_employee_options() {
@@ -47,12 +50,8 @@ void gui::show_add_new_client() {
         long long blance = c.wait_user_input(errorMessage);
     }
 
-
-
     new_client.setClientBlance(blance);
     new_client.printClientInf();
-    
-
 
     loginData.setAccountType("0");
     loginData.setLoginUser(new_client.getClientUsername());
@@ -147,37 +146,37 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
         c.changeUssrPassword(userLoginData);
     }
 
-    // Note to change bool to string and reverse it 
+    // Note to change bool to string and reverse it >> Done that 
     system("cls");
     show_client_options(currentClient);
-    int selected_option = c.wait_user_input();
+	int selected_option = c.checkSelectionRange(5);
 
     switch (selected_option)
     {
-    case 0:
-    
-    case 1:
+	case 1:
         system("cls");
-        currentClient.printClientInf();
+		c.fullAccountInfo(currentClient);
         break;
     case 2:
         system("cls");
         c.showAccountBlance(currentClient);
         break;
-    case 3:
+	case 3:
+		system("cls");
+		c.Deposite(clientsData, currentClient, thisClientIndexInClientsData);
+		break;
+    case 4:
          system("cls");
          c.Withdrawal(clientsData, currentClient, thisClientIndexInClientsData);
         break;
-    case 4:
+    case 5:
         system("cls");
         c.transferTo(clientsData, currentClient, thisClientIndexInClientsData);
         break;
-    case 5:
-        exit(0);
-        break;
-    case 6:
-        Menu_login();
-        break;
+	case 6:
+		system("cls");
+		c.changeUserPassword();
+		break;
     default:
         break;
     }
@@ -189,9 +188,10 @@ void gui::show_client_options(Client& currentClient) {
     cout << "Welcome " << currentClient.getClientFullName() << " you can manage your account from here" << endl;
     cout << "1- Full account information" << endl;
     cout << "2- Account blance" << endl;
-    cout << "3- Withdrawal" << endl;
-    cout << "4- Transfer" << endl;
-    cout << "5- Change password" << endl;
+	cout << "3- Deposite" << endl;
+    cout << "4- Withdrawal" << endl;
+    cout << "5- Transfer" << endl;
+    cout << "6- Change password" << endl;
     cout << "Enter your choice :";
 }
 

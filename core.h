@@ -29,18 +29,28 @@ public:
 	vector<LoginData> get_login_creditentials();
 	int append2Clients(string& fname, Client& new_client);
 	int append2users(string& file_name, LoginData& new_client);
+	int checkSelectionRange(int to);
+	int checkSelectionRange(int from, int to);
 	long get_last_Client_ID();
 	string get_last_line_in_text_file();
 	bool text_is_empty();
 	void set_account_type(int& t);
 	int get_account_type();
+	int userReturnOExit();
+	void fullAccountInfo(Client& currentClient);
 	string set_login_username(string& fullName);
 	vector<Client> get_clients_data();
 	int get_client_index(LoginData& userLoginData, vector<Client>& clientsData);
 	LoginData changeUssrPassword(LoginData userLoginData);
 	void Withdrawal(vector<Client>& clientsData, Client& currentClient, int index);
 
+	void Deposite(vector<Client>& clientsData, Client& currentClient, int index);
+
 	void transferTo(vector<Client>& clientsData, Client& currentClient, int index);
+
+	LoginData changeUserPassword(vector<LoginData>& loginData, LoginData& userLoginData);
+
+	LoginData changeUserPassword(LoginData userLoginData);
 
 	long long checkBlance(Client& currentClient);
 
@@ -53,6 +63,7 @@ public:
 
 	void read_text_file_then_replace_a_line(string fileName, string searchFor, string replaceThis, string replaceTo);
 	void saveDataToClients(string fileName, vector<Client> clients);
+	void saveDataToUsers(string fileName, vector<LoginData> loginData);
 	void saveData(string fileName, vector<Client> clients);
 	void saveData(string fileName, vector<Client> clients, string replaceThis, string replaceTo);
 	int showAccountBlance(Client& currentclient);
