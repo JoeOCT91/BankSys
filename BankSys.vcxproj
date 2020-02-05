@@ -150,6 +150,7 @@
     <ClCompile Include="BankSys.cpp" />
     <ClCompile Include="core.cpp" />
     <ClCompile Include="gui.cpp" />
+    <ClCompile Include="SearchFor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Employee.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="LoginData.h" />
+    <ClInclude Include="SearchFor.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="clients.txt" />

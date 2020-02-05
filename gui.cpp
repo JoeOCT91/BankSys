@@ -4,19 +4,12 @@ using namespace std;
 
 //My Notes (Yousef Mohamed)
 
-// need to creat counction name success choicess exit or return main menu
-// need to creat function to cheak user select option is in range ...
+// need to creat counction name success choicess exit or return main menu >> Done
+// need to creat function to cheak user select option is in range ... >> Done
 
 
-void gui::show_employee_options() {
-    cout << "Welcome you can manage bank clients from here" << endl;
-    cout << "1- Add new client" << endl;
-    cout << "2- Edit existing account" << endl;
-    cout << "3- Show all clients" << endl;
-    cout << "3- change user" << endl;
-    cout << "0- exit" << endl;
-    cout << "Enter your choice :";
-}
+
+
 //This function to add a new client.
 void gui::show_add_new_client() {
     //By default this client login password will be "asd123"
@@ -77,6 +70,7 @@ void gui::show_manager_options() {
 
 void gui::Menu_manager()
 {
+	system("cls");
     show_manager_options();
     int selected_option = c.wait_user_input();
 
@@ -106,6 +100,10 @@ void gui::Menu_manager()
 
 void gui::Menu_employee()
 {
+	system("cls");
+	//All clients data stored in vector 
+	vector<Client> clientsData = c.get_clients_data();
+
     show_employee_options();
     int selected_option = c.wait_user_input();
 
@@ -113,14 +111,11 @@ void gui::Menu_employee()
 
     switch (selected_option)
     {
-    case 0:
-        exit(0);
-        break;
     case 1:
         show_add_new_client();
         break;
     case 2:
-        cout << "edit existing" << endl;
+		c.searchForClient(clientsData);
         break;
     case 3:
         Menu_login();
@@ -131,6 +126,16 @@ void gui::Menu_employee()
 
     Menu_employee();
 }
+void gui::show_employee_options() {
+	cout << "Welcome you can manage bank clients from here" << endl;
+	cout << "1- Add new client" << endl;
+	cout << "2- Searsh for client" << endl;
+	cout << "3- Show all clients" << endl;
+	cout << "4- Reset client password" << endl;
+	cout << "5- change user" << endl;
+	cout << "Enter your choice :";
+}
+
 // CLIENT SECTION #############################
 
 void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
@@ -140,11 +145,10 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
     int thisClientIndexInClientsData = c.get_client_index(userLoginData, clientsData);
     //Current client data any change will store in this object and push it to the vector in the same index 
     Client currentClient = clientsData.at(thisClientIndexInClientsData);
-
     //most cheak if it the frist login by this user......
     if (userLoginData.getIsFristLogin()) {
-        c.changeUssrPassword(userLoginData);
-    }
+		c.changeUserPassword(loginData, userLoginData);
+	}
 
     // Note to change bool to string and reverse it >> Done that 
     system("cls");
@@ -175,7 +179,7 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
         break;
 	case 6:
 		system("cls");
-		c.changeUserPassword();
+		c.changeUserPassword(loginData, userLoginData);
 		break;
     default:
         break;
@@ -194,6 +198,8 @@ void gui::show_client_options(Client& currentClient) {
     cout << "6- Change password" << endl;
     cout << "Enter your choice :";
 }
+
+// End of client view 
 
 
 LoginData gui::login_now(vector<LoginData>& login_data)

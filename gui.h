@@ -1,9 +1,10 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 #include "core.h"
-
+#include "SearchFor.h"
 
 class gui
 {
@@ -23,5 +24,6 @@ private:
 	string USERSFILE = "users.txt";
 
 	core c;
+	SearchFor searchFor;
 };
 

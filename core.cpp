@@ -1,7 +1,9 @@
+#pragma once
 #include "core.h"
-
+#include "SearchFor.h"
 
 using namespace std;
+
 vector<string> core::read_a_file_to_vector_of_strings(string fileName)
 {
     vector<string> vector_of_strings;
@@ -14,14 +16,11 @@ vector<string> core::read_a_file_to_vector_of_strings(string fileName)
         {
             getline(file, lineOfData);
 
-
+			// not store empty line in the list 
             if (lineOfData != "") {
                 vector_of_strings.push_back(lineOfData);
             }
-
-
-
-            //file >> lineOfData;
+			
         }
         file.close();
     }
@@ -29,15 +28,13 @@ vector<string> core::read_a_file_to_vector_of_strings(string fileName)
     {
         cout << "Unable to open file: " << fileName << endl;
     }
-    cout << vector_of_strings.size() << endl;
     return vector_of_strings;
 }
-
 
 bool core::text_is_empty() {
     int length;
     ifstream myfile;
-
+	
     myfile.open("clients.txt", ios::binary); // open your file
     myfile.seekg(0, ios::end); // put the "cursor" at the end of the file
     length = myfile.tellg(); // find the position of the cursor
@@ -85,7 +82,7 @@ string core::get_last_line_in_text_file() {
 
     else {
         cout << "Clients.txt faild to open" << endl;
-        return 0;
+        return "j";
     } 
 }
 
@@ -103,7 +100,6 @@ long core::get_last_Client_ID() {
     return lastId;
          
     }
-
 
 vector<LoginData> core::get_login_creditentials() {
     vector<LoginData> loginData;
@@ -133,7 +129,6 @@ vector<LoginData> core::get_login_creditentials() {
     }
     return loginData;
 }
-
 
 //grap all clients data from text file ............
 //this function will use it to print all clients information in employee window .. worth time to creat it :)
@@ -187,12 +182,9 @@ int core::get_client_index(LoginData& userLoginData, vector<Client>& clientsData
 
         if (userLoginData.getLoginuser() == clientsData.at(i).getClientUsername()) {
             return i;
-        }
-        
-
+        }    
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 int core::wait_user_input() {
@@ -264,16 +256,6 @@ long long core::string_to_long(string& s)
 }
 
 
-
-
-
-
-
-
-
-
-
-
 string core::set_login_username(string& fullName) {
     string clientLoginUsername;
     clientLoginUsername = fullName[0];
@@ -288,26 +270,6 @@ string core::set_login_username(string& fullName) {
     return clientLoginUsername;
 
 }
-
-
-
-
-LoginData core::changeUssrPassword(LoginData userLoginData) {
-    string oldPassword = userLoginData.getLoginPassword();
-    string newPassword;
-    cout << "Please enter your new password: ";
-    cin.clear();
-    cin.ignore();
-    getline(cin, newPassword);
-    userLoginData.setLoginPassword(newPassword);
-    userLoginData.SetIsFristLogin(false);
-    // rewrite this user data to USERS.txt in the same line by replacing the old line,
-    // line start with LOGINUSERNAME >> will find it then replace it 
-    // need to creat function that read text file then replace the line;
-    read_text_file_then_replace_a_line(USERSFILE, userLoginData.getLoginuser(), oldPassword, newPassword);
-    return userLoginData;
-}
-
 
 void core::read_text_file_then_replace_a_line(string fileName, string searchFor, string replaceThis, string replaceTo) {
     
@@ -371,7 +333,7 @@ void core::saveDataToUsers(string fileName, vector<LoginData> loginData) {
 			lineOfData = loginData.at(i).getLoginuser() + SEP;
 			lineOfData += loginData.at(i).getLoginPassword() + SEP;
 			lineOfData += loginData.at(i).getAccountType() + SEP;
-			lineOfData += bool_to_string(loginData.at(i).getIsFristLogin);
+			lineOfData += bool_to_string(loginData.at(i).getIsFristLogin());
 			myfile << lineOfData << endl;
 		}
 		myfile.close();
@@ -387,6 +349,110 @@ int core::get_account_type()
 {
     return account_type;
 }
+//void core::showSearchOptions(){
+//	cout << "Search by" << endl;
+//	cout << "1- username" << endl;
+//	cout << "2- client name" << endl;
+//	cout << "3- account ID" << endl;
+//	cout << "Enter your choice :";
+//}
+void core::printSearchResult(Client client) {
+
+}
+void core::searchForClient(vector<Client> &clientsData){
+
+	system("cls");
+
+	search->showSearchOptions();
+	
+	int selected_option = checkSelectionRange(3);
+
+	switch (selected_option)
+	{
+	case 1:
+		system("cls");
+		search->searchByUsername(clientsData);
+		break;
+	default:
+	case 2:
+		system("cls");
+		search->searchByUsername(clientsData);
+
+		break;
+	case 3:
+		system("cls");
+		search->searchByUsername(clientsData);
+		break;
+	}
+}
+/*
+void core::searchByusername(vector<Client> & clientsData) {
+	string searshFor;
+	cout << "Enter the client username you want to search for: ";
+	cin.clear();
+	getline(cin, searshFor);
+	cout << searshFor;
+
+	for (int i = 0; i < clientsData.size(); i++) {
+		if (clientsData.at(i).getClientUsername() == searshFor) {
+			Client currentClient = clientsData.at(i);
+			currentClient.printClientInf();
+			foundOptions(clientsData, currentClient, i);
+			return; 
+		}
+	}
+	notFound(clientsData);
+
+}
+*/
+void core::foundOptions(vector<Client>& clientsData,Client currentClient, int clientInedx) {
+	cout << "Your entry not found  " << endl;
+	cout << "1- Edit client information" << endl;
+	cout << "2- Make deposite" << endl;
+	cout << "3- Make withdrawal" << endl;
+	cout << "4- Make transfer" << endl;
+	cout << "5- Exit" << endl;
+
+	cout << "Choose you action :";
+
+	int selected_option = checkSelectionRange(3);
+	switch (selected_option) {
+	case 1:
+		editClientInformation(clientsData, currentClient, clientInedx);
+		break;
+	case 2:
+		system("cls");
+		break;
+	case 3:
+		exit(0);
+		break;
+	}
+}
+
+
+void core::editClientInformation(vector<Client>& clientsData, Client& currentClient, int& clientIndex) {
+	cout << "1- Edit client name: " << endl;
+	cout << "2- Disable client: " << endl;
+	cout << "3 -Return to main menu" << endl;
+	cout << "4- exit" << endl;
+	
+	int selected_option = checkSelectionRange(4);
+	switch (selected_option)
+	{
+	case 1:
+		
+		break;
+	case 2:
+		break;
+	case 3:
+		return;
+		break;
+	case 4:
+		exit(0);
+		break;
+	}
+
+}
 
 // Alwayes split functions to smaller functions its better :) 
 int core::userReturnOExit() {
@@ -401,6 +467,7 @@ int core::userReturnOExit() {
 	}
 }
 // to print account full information ...
+// 
 void core::fullAccountInfo(Client& currentClient) {
 	currentClient.printClientInf();
 	userReturnOExit();
@@ -415,7 +482,7 @@ int core::showAccountBlance(Client& currentclient) {
     int i = wait_user_input();
     return i;
 }
-// to make awithdrawal ...
+// to make a withdrawal ...
 void core::Withdrawal(vector<Client>& clientsData, Client& currentClient, int index) {
     long long blance = stoll(currentClient.getClientBlance());
     string replaceThis = currentClient.getClientBlance();
@@ -472,23 +539,13 @@ void core::changeUserPassword(vector<LoginData>& loginData, LoginData& userLogin
 
 	for (int i = 0; i < loginData.size(); i++) {
 		if (loginData.at(i).getLoginuser() == userLoginData.getLoginuser()) {
+			cout << userLoginData.getIsFristLogin() << endl;
+
 			loginData.at(i) = userLoginData;
 		}
 	}
-
-
-
-
-
-	// rewrite this user data to USERS.txt in the same line by replacing the old line,
-	// line start with LOGINUSERNAME >> will find it then replace it 
-	// need to creat function that read text file then replace the line;
-	//read_text_file_then_replace_a_line(USERSFILE, userLoginData.getLoginuser(), oldPassword, newPassword);
-
-	//the new function ..
 	
 	saveDataToUsers(USERSFILE, loginData);
-	return userLoginData;
 }
 
 
@@ -531,7 +588,8 @@ bool core::string_to_bool(string s) {
     }
     return r;
 }
-
+// ineed a girl like you yeah ya yeah ...
+// myabe i know i drunk ... maybe i know you the one ...
 string core::bool_to_string(bool b) {
     string r= "";
     if (b) {
@@ -586,6 +644,7 @@ int core::checkSelectionRange(int to) {
 	int selection = wait_user_input();
 	if (selection < 1 || selection > to) {
 		cout << "Your selection is out of range\nEnter your choice: ";
+		cin.clear();
 		selection = wait_user_input();
 	}
 	else {
