@@ -1,3 +1,10 @@
-zzz,123,0,false
-aaa,111,1,true
-qqq,111,0,false
+zzz,123,0,false,false
+1000,aaa,111,1,true
+qqq,111,2,true,false
+anasr14,asd123,0,true,false
+seldeeb13,asd123,0,true,false
+ssss3,11,0,false,false
+555,ssss3,11,0,false
+20000007,assa6,11,0,false
+20000008,ymoo10,111,0,false
+20000009,adex10,asd123,0,true

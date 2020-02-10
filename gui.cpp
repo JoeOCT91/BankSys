@@ -17,6 +17,7 @@ void gui::show_add_new_client() {
     LoginData loginData;
     string new_client_fullname;
     string new_client_full_info;
+	long clientId = 20000000;
     cout << "Enter client full name: ";
     getline(cin, new_client_fullname);
     new_client.setClientFullName(new_client_fullname);
@@ -24,10 +25,10 @@ void gui::show_add_new_client() {
     new_client.setClientLoginUsername(c.set_login_username(new_client_fullname));
     // set ID for this new client ....
     if (c.text_is_empty()) {
-        new_client.setClientAccountId(20000000); //if this client is the frist client in the bank
+        new_client.setClientAccountId(clientId); //if this client is the frist client in the bank
     }
     else {
-        long clientId;
+        
         clientId = c.get_last_Client_ID();
         clientId += 1;
         new_client.setClientAccountId(clientId);
@@ -45,7 +46,8 @@ void gui::show_add_new_client() {
 
     new_client.setClientBlance(blance);
     new_client.printClientInf();
-
+	string s = to_string(clientId);
+	loginData.setID(s);
     loginData.setAccountType("0");
     loginData.setLoginUser(new_client.getClientUsername());
     loginData.SetIsFristLogin(true);
@@ -55,15 +57,14 @@ void gui::show_add_new_client() {
     c.append2Clients(CLIENTSFILE, new_client);
     c.append2users(USERSFILE, loginData);
     
-
 }
+
 void gui::show_manager_options() {
-    cout << "Welcome you can manage your account from here" << endl;
-    cout << "0- exit" << endl;
-    cout << "1- Account blance" << endl;
-    cout << "2- Deposite" << endl;
-    cout << "3- With" << endl;
-    cout << "4- change user" << endl;
+    cout << "Welcome you can manage mange bank system form here\nYou loged in as admin" << endl;
+    cout << "1- clients Options" << endl;
+    cout << "2- Employee options" << endl;
+    cout << "3- change user" << endl;
+    cout << "4- Exit" << endl;
     cout << "Enter your choice :";
 }
 
@@ -72,31 +73,75 @@ void gui::Menu_manager()
 {
 	system("cls");
     show_manager_options();
-    int selected_option = c.wait_user_input();
+    int selected_option = c.checkSelectionRange(4);
 
     switch (selected_option)
     {
-    case 0:
-        exit(0);
-        break;
     case 1:
-        cout << "balance" << endl;
+		system("cls");
+		Menu_employee();
         break;
     case 2:
+		system("cls");
         cout << "deposit" << endl;
         break;
     case 3:
-        cout << "with" << endl;
+		system("cls");
+		Menu_login();
         break;
     case 4:
-        Menu_login();
+		system("cls");
+		exit(0);
         break;
-    default:
-        break;
+
     }
 
     Menu_manager();
 }
+
+void gui::show_Edit_Employee() {
+	cout << "Welcome you can manage mange bank system form here\nYou loged in as admin" << endl;
+	cout << "1- Add new employee" << endl;
+	cout << "2- Search for employee" << endl;
+	cout << "3- Show all employee" << endl;
+	cout << "4- Main Menu" << endl;
+	cout << "5- Exit";
+	cout << "Enter your choice :";
+}
+
+void gui::menu_Edit_Employee()
+{
+	system("cls");
+	show_Edit_Employee();
+	int selected_option = c.checkSelectionRange(4);
+
+	switch (selected_option)
+	{
+	case 1:
+		system("cls");
+		Menu_employee();
+		break;
+	case 2:
+		system("cls");
+		cout << "deposit" << endl;
+		break;
+	case 3:
+		system("cls");
+		Menu_login();
+		break;
+	case 4:
+		system("cls");
+		exit(0);
+		break;
+
+	}
+
+	Menu_manager();
+}
+
+
+
+
 
 void gui::Menu_employee()
 {
@@ -112,16 +157,17 @@ void gui::Menu_employee()
     switch (selected_option)
     {
     case 1:
-        show_add_new_client();
+        c.addNewClient();
         break;
     case 2:
-		c.searchForClient(clientsData);
+		searchFor.searchForClient(clientsData);
         break;
     case 3:
-        Menu_login();
+		searchFor.showAllClients(clientsData);
         break;
-    default:
-        break;
+	case 4:
+		Menu_login();
+		break;
     }
 
     Menu_employee();
@@ -131,8 +177,7 @@ void gui::show_employee_options() {
 	cout << "1- Add new client" << endl;
 	cout << "2- Searsh for client" << endl;
 	cout << "3- Show all clients" << endl;
-	cout << "4- Reset client password" << endl;
-	cout << "5- change user" << endl;
+	cout << "4- change user" << endl;
 	cout << "Enter your choice :";
 }
 
@@ -181,8 +226,6 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
 		system("cls");
 		c.changeUserPassword(loginData, userLoginData);
 		break;
-    default:
-        break;
     }
 
     Menu_client(userLoginData, loginData);
@@ -202,34 +245,61 @@ void gui::show_client_options(Client& currentClient) {
 // End of client view 
 
 
+
+
+// this part manage login auth ..
 LoginData gui::login_now(vector<LoginData>& login_data)
 {
-    string username = "";
-    string password = "";
-    string accountType = "";
-    size_t users_count = login_data.size();
+	size_t i = checkUsername(login_data);
+	checkPassword(login_data[i]);
 
-    cout << "Please enter your username: ";
-    cin >> username;
 
-    for (int i = 0; i < users_count; i++) {
-        if (username == login_data[i].getLoginuser()) {
-            cout << "Please enter your password: ";
-            cin >> password;
-            while (password != login_data[i].getLoginPassword()) {
-                cout << "INVALID PASSWORD RETRY" << endl;
-                cout << "Enter your password Again: ";
-                cin >> password;
-            }
-            accountType = login_data[i].getAccountType();
-            return  login_data[i];
-        }
-    }
-    cout << "This username you enterd not exist, TRY AGAIN";
-    login_now(login_data);
+  
+	LoginData userLoginData = login_data[i];
+	return  userLoginData;
 
-    exit;
 }
+
+size_t gui::checkUsername(vector<LoginData>& login_data) {
+	string username;
+	size_t users_count = login_data.size();
+
+	cout << "Please enter your username: ";
+	cin.clear();
+	getline(cin, username);
+
+	while (true) {
+		for (size_t n = 0; n < users_count; n++) {
+			if (login_data.at(n).getLoginuser() == username) {
+				return n;
+			}
+		}
+		cout << "The username you enterd not exist, TRY AGAIN\n";
+		cout << "Please enter your username: ";
+
+		cin.clear();
+		getline(cin, username);
+	}
+}
+
+void gui::checkPassword(LoginData userLoginData) {
+
+	string password;
+
+	cout << "Please enter your password: ";
+	while (true) {
+		cin.clear();
+		getline(cin, password);
+		if (password == userLoginData.getLoginPassword()) {
+			return;
+		}
+		else {
+			cout << "INVALID PASSWORD RETRY" << endl;
+			cout << "Enter your password Again: ";
+		}
+	}
+}
+
 
 
 
@@ -250,7 +320,7 @@ void gui::Menu_login()
         Menu_client(userLoginData, loginData);
         break;
     case 1:
-        Menu_employee();
+        //employeeGUI.cheackEmployee(userLoginData);
         break;
     case 2:
         Menu_manager();
@@ -259,3 +329,4 @@ void gui::Menu_login()
         break;
     }
 }
+

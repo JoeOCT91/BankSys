@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -12,6 +14,7 @@ private:
 	long mClientAccountID;
     long long mClientBlance;
 	bool mFristLogin;
+	bool mStatus;
 	
 
 public:

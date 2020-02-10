@@ -5,6 +5,8 @@
 #include <iostream>
 #include "LoginData.h"
 #include "client.h"
+#include <set>
+#include "Employee.h"
 
 
 class SearchFor;
@@ -29,6 +31,8 @@ private:
 	char SEP = ',';
 	string USERSFILE = "users.txt";
 	string CLIENTSFILE = "clients.txt";
+	string EMPLOYEEFILE = "employee.txt";
+
 
 
 public:
@@ -36,6 +40,10 @@ public:
 	int append2Clients(string& fname, Client& new_client);
 	int append2users(string& file_name, LoginData& new_client);
 	int checkSelectionRange(int to);
+	vector<Employee> getEmployeesData();
+	void addNewClient();
+	string getFullName();
+	string cheackStringNotHasNumbers();
 	int checkSelectionRange(int from, int to);
 	long get_last_Client_ID();
 	string get_last_line_in_text_file();
@@ -58,7 +66,6 @@ public:
 
 	long long checkId(vector<Client>& clientsData, int& index);
 
-	void searchForClient(vector<Client>& clientsData);
 
 	void read_text_file_then_replace_a_line(string fileName, string searchFor, string replaceThis, string replaceTo);
 	void saveDataToClients(string fileName, vector<Client> clients);
@@ -72,15 +79,19 @@ public:
 	long long wait_user_input(string errorMessage);
 
 
-	//void searchByusername(vector<Client>& clientsData);
 
-	void foundOptions(vector<Client>& clientsData, Client currentClient, int clientInedx);
 
 
 
 
 
 	void editClientInformation(vector<Client>& clientsData, Client& currentClient, int& clientIndex);
+
+	void editClientName(vector<Client>& clientsData, Client& currentClient, int& clientIndex);
+
+	void resetPassword(vector<Client>& clientsData, Client& currentClient, int& clientIndex);
+
+	bool areYouSure();
 
 
 

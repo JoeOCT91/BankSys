@@ -1,7 +1,9 @@
 #pragma once
+#include <iostream>
+#include "core.h"
 using namespace std;
 
-class core;
+
 
 class SearchFor
 {
@@ -14,12 +16,18 @@ public:
 	void foundOptions(vector<Client>& clientsData, Client currentClient, int clientInedx);
 
 	void notFound(vector<Client>& clientsData);
-
 	void searchByClientname(vector<Client>& clientsData);
+	void searchByClientnameResult(vector<Client>& clientsData, vector<int>& resultClientsIndex);
+
+	void searchByClientID(vector<Client>& clientsData);
+
+	void searchByClientID(vector<Client>& clientsData, vector<int>& resultClientsIndex);
+
+	void showAllClients(vector<Client>& clientsData);
 
 
 
 protected:
-	core* c;
+	core  c;
 };
 

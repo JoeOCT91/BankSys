@@ -27,6 +27,18 @@
     <ClCompile Include="SearchFor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NewEmployee.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadPostions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Department.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmployeeGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Employee.h">
@@ -47,12 +59,27 @@
     <ClInclude Include="SearchFor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NewEmployee.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadPostions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Department.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EmployeeGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="users.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="clients.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="employee.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

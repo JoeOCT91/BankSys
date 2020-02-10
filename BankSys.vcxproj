@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -149,19 +149,28 @@
   <ItemGroup>
     <ClCompile Include="BankSys.cpp" />
     <ClCompile Include="core.cpp" />
+    <ClCompile Include="Department.cpp" />
+    <ClCompile Include="EmployeeGUI.cpp" />
     <ClCompile Include="gui.cpp" />
+    <ClCompile Include="NewEmployee.cpp" />
+    <ClCompile Include="ReadPostions.cpp" />
     <ClCompile Include="SearchFor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.h" />
     <ClInclude Include="core.h" />
+    <ClInclude Include="Department.h" />
     <ClInclude Include="Employee.h" />
+    <ClInclude Include="EmployeeGUI.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="LoginData.h" />
+    <ClInclude Include="NewEmployee.h" />
+    <ClInclude Include="ReadPostions.h" />
     <ClInclude Include="SearchFor.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="clients.txt" />
+    <Text Include="employee.txt" />
     <Text Include="users.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
