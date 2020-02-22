@@ -1,10 +1,4 @@
-20000000,yousef mohamed elserwey,10000000,zzz
-20000001,amr nasr,10000000,qqq
-20000002,amr nasr osman,40000,anasr14
-20000003,samar eldeeb,60004950,seldeeb13
-20000004,www,251253323,wwww3,1
-20000005,sss,5455656,ssss3,1
-20000006,sss,265646265,ssss3,1
-20000007,as ssa,25563266,assa6,1
-20000008,yousef moo,46578962,ymoo10,1
-20000009,as dex sdd,549853,adex10,1
+20000000,yousef mohamed abas,50000,ymohamed19
+20000001,noha abdelrazek,10000,nabdelrazek15
+20000002,ayman mohamed bedeer,50000,amohamed20
+20000003,ayman mohamed beddeer,70000,amohamed21

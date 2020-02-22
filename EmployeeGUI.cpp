@@ -1,100 +1,105 @@
 #include "EmployeeGUI.h"
 
-//wehave login object hold userloginID
-//Need to cheak this loginId with employee loginsIDs
+void EmployeeGUI::cheackEmployee(LoginData userLoginData, vector<LoginData>& loginData, size_t index) {
 
-
-void EmployeeGUI::cheackEmployee(LoginData userLoginData) {
-
+	//All Employees data Stored in vector
 	vector<Employee> employeesData = c.getEmployeesData();
-	int employeeDepartment = getEmployeeDepartment(employeesData, userLoginData);
 
-	switch (employeeDepartment)
-	{
-	case 0:
-		bankDirectorGUI(employeesData);
-		break;
-	case 1:
-		break;
-	case 2:
-		break;
-	case 3:
-		break;
+	Employee currentEmploye = getEmployeeCurrentEmployee(employeesData, userLoginData);
 
+	if (userLoginData.getIsFristLogin()) {
+		system("cls");
+		c.changeUserPassword(loginData, userLoginData, index);
+		return;
 	}
 
-}
-void EmployeeGUI::bankDirectorGUI(vector<Employee>& employeesData) {
-	showBankDirectorOptions();
-	int selected_option = c.checkSelectionRange(5);
-
-	switch (selected_option)
-	{
-	case 1:
+	if (currentEmploye.getEmployeePostion() == "manager") {
+		bankDirectorOptions(employeesData);
+	}
+	else {
 		g.Menu_employee();
-		break;
-	case 2:
-		break;
-	case 3:
-		break;
-	case 4:
-		exit(0);
-		break;
 	}
-
-	bankDirectorGUI(employeesData);
 }
 
-
-int EmployeeGUI::getEmployeeDepartment(vector<Employee>& employeesData, LoginData& userLoginData) {
+Employee EmployeeGUI::getEmployeeCurrentEmployee(vector<Employee>& employeesData, LoginData& userLoginData) {
 
 	size_t employeeCount = employeesData.size();
 
 	for (size_t t = 0; t < employeesData.size(); t++) {
-		if (stol(userLoginData.getID()) == employeesData.at(t).getEmployeeId()) {
-			return employeesData.at(t).getEmployeeDepartment();
+		if (userLoginData.getID() == employeesData.at(t).getID()) {
+			return employeesData.at(t);
 		}
 	}
-
 }
-
-void EmployeeGUI::showBankDirectorOptions() {
-	cout << "Welcome" << endl;
-	cout << "1- Manage clients" << endl;
-	cout << "2- Manage employee" << endl;
-	cout << "3- Change user" << endl;
-	cout << "4- Exit" << endl;
-	cout << "Enter your choice :";
-}
-void EmployeeGUI::HREmployeeOtions() {
-	showHREmployeeOtions();
-	int selected_option = c.checkSelectionRange(5);
+void EmployeeGUI::bankDirectorOptions(vector<Employee>& employeesData) {
+	system("cls");
+	showBankDirectorOptions();
+	int selected_option = c.checkSelectionRange(4);
 
 	switch (selected_option)
 	{
 	case 1:
+		system("cls");
 		g.Menu_employee();
 		break;
 	case 2:
+		system("cls");
+		manageEmployees(employeesData);
 		break;
 	case 3:
+		system("cls");
+		return;
 		break;
 	case 4:
 		exit(0);
 		break;
 	}
-
-	bankDirectorGUI(employeesData);
-
-
-}
-void EmployeeGUI::showHREmployeeOtions() {
-
-	cout << "1- Add new employee";
-	cout << "2- Show new employees requests";
-	cout << "Your choice:  ";
+	bankDirectorOptions(employeesData);
 }
 
+void EmployeeGUI::showBankDirectorOptions() {
+	cout << "Welcome to bank manger mangment system" << endl;
+	cout << "1- Manage clients" << endl;
+	cout << "2- Manage employee" << endl;
+	cout << "3- Change user" << endl;
+	cout << "4- Exit" << endl;
+	cout << "Enter your choice: ";
+}
 
-//Department manger make request for new employee
-//
+void EmployeeGUI::manageEmployees(vector<Employee>& employeesData) {
+	system("cls");
+	showManageEmployee();
+	int selected_option = c.checkSelectionRange(5);
+
+	switch (selected_option)
+	{
+	case 1:
+		system("cls");
+		c.addNewEmployee(employeesData);
+		break;
+	case 2:
+		searchFor.searchForEmployee(employeesData);
+		break;
+	case 3:
+		searchFor.showAllEmployees(employeesData);
+		return;
+		break;
+	case 4:
+		break;
+		break;
+	case 5:
+		exit(0);
+		break;
+	}
+	manageEmployees(employeesData);
+}
+
+void EmployeeGUI::showManageEmployee() {
+	cout << "Welcome" << endl;
+	cout << "1- Add new Employee" << endl;
+	cout << "2- Searsh for employee" << endl;
+	cout << "3- Show all employees" << endl;
+	cout << "4- Return to main menu" << endl;
+	cout << "5- Exit" << endl;
+	cout << "Enter your choice: ";
+}

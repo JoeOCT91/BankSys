@@ -149,23 +149,19 @@
   <ItemGroup>
     <ClCompile Include="BankSys.cpp" />
     <ClCompile Include="core.cpp" />
-    <ClCompile Include="Department.cpp" />
     <ClCompile Include="EmployeeGUI.cpp" />
     <ClCompile Include="gui.cpp" />
-    <ClCompile Include="NewEmployee.cpp" />
-    <ClCompile Include="ReadPostions.cpp" />
+    <ClCompile Include="SaveAndAppend.cpp" />
     <ClCompile Include="SearchFor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.h" />
     <ClInclude Include="core.h" />
-    <ClInclude Include="Department.h" />
     <ClInclude Include="Employee.h" />
     <ClInclude Include="EmployeeGUI.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="LoginData.h" />
-    <ClInclude Include="NewEmployee.h" />
-    <ClInclude Include="ReadPostions.h" />
+    <ClInclude Include="SaveAndAppend.h" />
     <ClInclude Include="SearchFor.h" />
   </ItemGroup>
   <ItemGroup>

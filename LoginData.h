@@ -13,6 +13,7 @@ private:
 public:
 	LoginData() {
 		mLoginPassword = "asd123";
+		mStatus = true; //true is active user
 	}
 	void setID(string ID) {
 		mID = ID;
@@ -27,10 +28,13 @@ public:
 		mAccountType = accountType;
 	}
 	void setID(long long ID) {
-		mID = ID;
+		mID = to_string(ID);
 	}
 	void SetIsFristLogin(bool isFristLogin) {
 		mIsFristLogin = isFristLogin;
+	}
+	void setIsActive(bool isActive) {
+		mStatus = isActive;
 	}
 	string getLoginuser() {
 		return mLoginUser;
@@ -46,6 +50,9 @@ public:
 	}
 	bool getIsFristLogin() {
 		return mIsFristLogin;
+	}
+	bool getIsActive() {
+		return mStatus;
 	}
 };
 

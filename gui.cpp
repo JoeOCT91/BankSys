@@ -2,63 +2,6 @@
 
 using namespace std;
 
-//My Notes (Yousef Mohamed)
-
-// need to creat counction name success choicess exit or return main menu >> Done
-// need to creat function to cheak user select option is in range ... >> Done
-
-
-
-
-//This function to add a new client.
-void gui::show_add_new_client() {
-    //By default this client login password will be "asd123"
-    Client new_client;
-    LoginData loginData;
-    string new_client_fullname;
-    string new_client_full_info;
-	long clientId = 20000000;
-    cout << "Enter client full name: ";
-    getline(cin, new_client_fullname);
-    new_client.setClientFullName(new_client_fullname);
-
-    new_client.setClientLoginUsername(c.set_login_username(new_client_fullname));
-    // set ID for this new client ....
-    if (c.text_is_empty()) {
-        new_client.setClientAccountId(clientId); //if this client is the frist client in the bank
-    }
-    else {
-        
-        clientId = c.get_last_Client_ID();
-        clientId += 1;
-        new_client.setClientAccountId(clientId);
-    }
-
-    string errorMessage = "Entry must be a number \nPlease enter account opening blance: ";
-    cout << "Please enter account opening blance: ";
-    long long blance = c.wait_user_input(errorMessage);
-    if (blance < 5000) {
-        system("cls");
-        cout << "opening blance must be 5000 " << endl;
-        cout << "Please enter account opening blance: ";
-        long long blance = c.wait_user_input(errorMessage);
-    }
-
-    new_client.setClientBlance(blance);
-    new_client.printClientInf();
-	string s = to_string(clientId);
-	loginData.setID(s);
-    loginData.setAccountType("0");
-    loginData.setLoginUser(new_client.getClientUsername());
-    loginData.SetIsFristLogin(true);
-
-    //Write the new client data to users and clients files....
-    //Defult password set to "asd123"  
-    c.append2Clients(CLIENTSFILE, new_client);
-    c.append2users(USERSFILE, loginData);
-    
-}
-
 void gui::show_manager_options() {
     cout << "Welcome you can manage mange bank system form here\nYou loged in as admin" << endl;
     cout << "1- clients Options" << endl;
@@ -67,7 +10,6 @@ void gui::show_manager_options() {
     cout << "4- Exit" << endl;
     cout << "Enter your choice :";
 }
-
 
 void gui::Menu_manager()
 {
@@ -87,7 +29,6 @@ void gui::Menu_manager()
         break;
     case 3:
 		system("cls");
-		Menu_login();
         break;
     case 4:
 		system("cls");
@@ -127,7 +68,6 @@ void gui::menu_Edit_Employee()
 		break;
 	case 3:
 		system("cls");
-		Menu_login();
 		break;
 	case 4:
 		system("cls");
@@ -138,10 +78,6 @@ void gui::menu_Edit_Employee()
 
 	Menu_manager();
 }
-
-
-
-
 
 void gui::Menu_employee()
 {
@@ -166,7 +102,10 @@ void gui::Menu_employee()
 		searchFor.showAllClients(clientsData);
         break;
 	case 4:
-		Menu_login();
+		return;
+		break;
+	case 5:
+		exit(0);
 		break;
     }
 
@@ -178,12 +117,13 @@ void gui::show_employee_options() {
 	cout << "2- Searsh for client" << endl;
 	cout << "3- Show all clients" << endl;
 	cout << "4- change user" << endl;
+	cout << "5- Exit" << endl;
 	cout << "Enter your choice :";
 }
 
 // CLIENT SECTION #############################
 
-void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
+void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData, size_t index)
 {   //All clients data stored in vector 
     vector<Client> clientsData = c.get_clients_data();
     // this varibale hold current client index in clientsdata, will use it to edit data 
@@ -192,13 +132,12 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
     Client currentClient = clientsData.at(thisClientIndexInClientsData);
     //most cheak if it the frist login by this user......
     if (userLoginData.getIsFristLogin()) {
-		c.changeUserPassword(loginData, userLoginData);
+		c.changeUserPassword(loginData, userLoginData, index);
 	}
 
-    // Note to change bool to string and reverse it >> Done that 
     system("cls");
     show_client_options(currentClient);
-	int selected_option = c.checkSelectionRange(5);
+	int selected_option = c.checkSelectionRange(7);
 
     switch (selected_option)
     {
@@ -224,11 +163,15 @@ void gui::Menu_client(LoginData& userLoginData, vector<LoginData>& loginData)
         break;
 	case 6:
 		system("cls");
-		c.changeUserPassword(loginData, userLoginData);
+		c.changeUserPassword(loginData, userLoginData, index);
+		break;
+	case 7:
+		system("cls");
+		exit(0);
 		break;
     }
 
-    Menu_client(userLoginData, loginData);
+    Menu_client(userLoginData, loginData, index);
 }
 
 void gui::show_client_options(Client& currentClient) {
@@ -239,94 +182,10 @@ void gui::show_client_options(Client& currentClient) {
     cout << "4- Withdrawal" << endl;
     cout << "5- Transfer" << endl;
     cout << "6- Change password" << endl;
+	cout << "7- Exit" << endl;
     cout << "Enter your choice :";
 }
 
-// End of client view 
 
 
-
-
-// this part manage login auth ..
-LoginData gui::login_now(vector<LoginData>& login_data)
-{
-	size_t i = checkUsername(login_data);
-	checkPassword(login_data[i]);
-
-
-  
-	LoginData userLoginData = login_data[i];
-	return  userLoginData;
-
-}
-
-size_t gui::checkUsername(vector<LoginData>& login_data) {
-	string username;
-	size_t users_count = login_data.size();
-
-	cout << "Please enter your username: ";
-	cin.clear();
-	getline(cin, username);
-
-	while (true) {
-		for (size_t n = 0; n < users_count; n++) {
-			if (login_data.at(n).getLoginuser() == username) {
-				return n;
-			}
-		}
-		cout << "The username you enterd not exist, TRY AGAIN\n";
-		cout << "Please enter your username: ";
-
-		cin.clear();
-		getline(cin, username);
-	}
-}
-
-void gui::checkPassword(LoginData userLoginData) {
-
-	string password;
-
-	cout << "Please enter your password: ";
-	while (true) {
-		cin.clear();
-		getline(cin, password);
-		if (password == userLoginData.getLoginPassword()) {
-			return;
-		}
-		else {
-			cout << "INVALID PASSWORD RETRY" << endl;
-			cout << "Enter your password Again: ";
-		}
-	}
-}
-
-
-
-
-void gui::Menu_login()
-{
-    vector<LoginData> loginData = c.get_login_creditentials();
-    LoginData userLoginData = login_now(loginData);
-    int account_type = stoi(userLoginData.getAccountType());
-    
-    c.set_account_type(account_type);
-
-    system("cls");
-
-    int selected_option = -1;
-    switch (c.get_account_type())
-    {
-    case 0:
-        Menu_client(userLoginData, loginData);
-        break;
-    case 1:
-        //employeeGUI.cheackEmployee(userLoginData);
-        break;
-    case 2:
-        Menu_manager();
-        break;
-    default:
-        break;
-    }
-}
 

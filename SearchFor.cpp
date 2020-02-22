@@ -94,7 +94,6 @@ void SearchFor::foundOptions(vector<Client>& clientsData, Client currentClient, 
 		break;
 	}
 }
-
 void SearchFor::notFound(vector<Client>& clientsData) {
 	cout << "Your entry not found  " << endl;
 	cout << "1- Try Again" << endl;
@@ -137,9 +136,7 @@ void SearchFor::searchByClientname(vector<Client> & clientsData) {
 	if (foundClientsIndex.empty()) {
 		notFound(clientsData);
 	}
-
 	searchByClientnameResult(clientsData, foundClientsIndex);
-
 }
  
 void SearchFor::searchByClientnameResult(vector<Client>& clientsData, vector<int>& resultClientsIndex) {
@@ -178,15 +175,152 @@ void SearchFor::searchByClientID(vector<Client>& clientsData) {
 }
 
 void SearchFor::showAllClients(vector<Client>& clientsData) {
+	cout << c.stringAddPadding("Num", 5);
+	cout << c.stringAddPadding("ID", 10);
+	cout << c.stringAddPadding("Name", 30);
+	cout << c.stringAddPadding("Blance", 15);
+
 	cout << "All Clients :\n";
 	for (int i = 0; i < clientsData.size(); i++) {
-		cout << i + 1 << "- " << clientsData.at(i).getClientFullName();
-		cout << "\n	" << clientsData.at(i).getClientId() << endl;
+		cout << c.stringAddPadding(to_string(i + 1), 5);
+		cout << c.stringAddPadding(clientsData.at(i).getClientId(), 10);
+		cout << c.stringAddPadding(clientsData.at(i).getClientFullName(), 30);
+		cout << c.stringAddPadding(clientsData.at(i).getClientBlance(), 15) << endl;
 	}
 	cout << "Choose from above: ";
 	int selected_option = c.checkSelectionRange(clientsData.size());
 	int index = selected_option - 1;
 	Client currentClient = clientsData.at(index);
 	foundOptions(clientsData, currentClient, index);
+
+}
+
+void SearchFor::showSearchForEmployee() {
+	cout << "Search by" << endl;
+	cout << "1- username" << endl;
+	cout << "2- Employee name" << endl;
+	cout << "3- Employee ID" << endl;
+	cout << "4- Exit" << endl;
+	cout << "Enter your choice: ";
+}
+
+void SearchFor::searchForEmployee(vector<Employee>& employeesData) {
+
+	system("cls");
+
+	showSearchForEmployee();
+
+	int selected_option = c.checkSelectionRange(4);
+
+	switch (selected_option)
+	{
+	case 1:
+		system("cls");
+		//searchByEmployeeUsername(employeesData);
+		break;
+	default:
+	case 2:
+		system("cls");
+		//searchByEmployeename(clientsData);
+		break;
+	case 3:
+		system("cls");
+		searchByEmployeeID(employeesData);
+		break;
+	case 4:
+		exit(0);
+	}
+}
+void SearchFor::searchByEmployeeID(vector<Employee>& employeesData) {
+	int employeeId;
+
+	cout << "Enter employee ID you want to search for: ";
+
+	employeeId = c.wait_user_input("INVALID INPUT, Try again\nEnter employee ID you want to search for: ");
+	if (employeeId < 0 || employeeId > 99999999) {
+		cout << "INVALID INPUT, Try again\n";
+		searchByEmployeeID(employeesData);
+	}
+	for (int i = 0; i < employeesData.size(); i++) {
+		if (to_string(employeeId) == employeesData.at(i).getID()) {
+			Employee currentEmployee = employeesData.at(i);
+			employeeFoundOptions(employeesData, currentEmployee, i);
+			return;
+		}
+	}
+	cout << "INVALID INPUT, This ID not exist, Try again\n";
+	searchByEmployeeID(employeesData);
+}
+
+void SearchFor::employeeFoundOptions(vector<Employee>& employeesData, Employee currentEmployee, size_t index) {
+		system("cls");
+		currentEmployee.printEmployeeInf();
+		cout << "1- Edit employee information" << endl;
+		cout << "4- Main menu" << endl;
+		cout << "5- Exit" << endl;
+
+		cin.clear();
+		int selected_option = c.checkSelectionRange(5);
+
+		switch (selected_option) {
+		case 1:
+			system("cls");
+			c.editEmployeeInformation(employeesData, currentEmployee, index);
+			break;
+		case 2:
+			system("cls");
+			return;
+			break;
+		case 3:
+			exit(0);
+			break;
+		}
+}
+
+
+void SearchFor::employeeNotFound(vector<Employee>& employeesData) {
+	cout << "Your entry not found  " << endl;
+	cout << "1- Try Again" << endl;
+	cout << "2- Return to main menu" << endl;
+	cout << "3- Exit" << endl;
+	cout << "Choose your action :";
+
+	cin.clear();
+	int selected_option = c.checkSelectionRange(3);
+
+	switch (selected_option) {
+	case 1:
+		searchForEmployee(employeesData);
+		break;
+	case 2:
+		system("cls");
+		return;
+		break;
+	case 3:
+		exit(0);
+		break;
+	}
+}
+
+void SearchFor::showAllEmployees(vector<Employee>& employeesData) {
+	cout << c.stringAddPadding("ID", 6);
+	cout << c.stringAddPadding("Name", 35);
+	cout << c.stringAddPadding("Postion", 15);
+	cout << c.stringAddPadding("Salary", 7);
+	cout << c.stringAddPadding("age", 5) << endl;
+	
+
+	for (int i = 0; i < employeesData.size(); i++) {
+		cout << c.stringAddPadding(employeesData.at(i).getID(), 6);
+		cout << c.stringAddPadding(employeesData.at(i).getEmployeeName(), 35);
+		cout << c.stringAddPadding(employeesData.at(i).getEmployeePostion(), 15);
+		cout << c.stringAddPadding(employeesData.at(i).getEmployeeSalary(), 7);
+		cout << c.stringAddPadding(employeesData.at(i).getEmployeeAge(), 5) << endl;
+	}
+	cout << "Choose from above: ";
+	size_t selected_option = c.checkSelectionRange(employeesData.size());
+	size_t index = selected_option - 1;
+	Employee currentEmployee = employeesData.at(index);
+	employeeFoundOptions(employeesData, currentEmployee, index);
 
 }

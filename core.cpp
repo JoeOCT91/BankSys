@@ -4,6 +4,63 @@
 
 using namespace std;
 
+LoginData core::login_now(vector<LoginData>& login_data, size_t& t)
+{
+	size_t i = checkUsername(login_data);
+	checkPassword(login_data[i]);
+	t = i; //this user indexx in loginData list
+
+	LoginData userLoginData = login_data[i];
+	if (userLoginData.getIsActive()) {
+		return  userLoginData;
+	}
+	else
+	{
+		accountIsDisable();
+	}
+
+}
+
+size_t core::checkUsername(vector<LoginData>& login_data) {
+	string username;
+	size_t users_count = login_data.size();
+
+	cout << "Please enter your username: ";
+	cin.clear();
+	getline(cin, username);
+
+	while (true) {
+		for (size_t n = 0; n < users_count; n++) {
+			if (login_data.at(n).getLoginuser() == username) {
+				return n;
+			}
+		}
+		cout << "The username you enterd not exist, TRY AGAIN\n";
+		cout << "Please enter your username: ";
+
+		cin.clear();
+		getline(cin, username);
+	}
+}
+
+void core::checkPassword(LoginData userLoginData) {
+
+	string password;
+
+	cout << "Please enter your password: ";
+	while (true) {
+		cin.clear();
+		getline(cin, password);
+		if (password == userLoginData.getLoginPassword()) {
+			return;
+		}
+		else {
+			cout << "INVALID PASSWORD RETRY" << endl;
+			cout << "Enter your password Again: ";
+		}
+	}
+}
+
 vector<string> core::read_a_file_to_vector_of_strings(string fileName)
 {
     vector<string> vector_of_strings;
@@ -23,18 +80,17 @@ vector<string> core::read_a_file_to_vector_of_strings(string fileName)
         }
         file.close();
     }
-    else
-    {
+    else{
         cout << "Unable to open file: " << fileName << endl;
     }
     return vector_of_strings;
 }
 
-bool core::text_is_empty() {
+bool core::text_is_empty(string fileName) {
     int length;
     ifstream myfile;
 	
-    myfile.open("clients.txt", ios::binary); // open your file
+    myfile.open(fileName, ios::binary); // open your file
     myfile.seekg(0, ios::end); // put the "cursor" at the end of the file
     length = myfile.tellg(); // find the position of the cursor
     myfile.close(); // close your file
@@ -48,10 +104,10 @@ bool core::text_is_empty() {
 }
 
 // To get last line in a text file and store it as string .... 
-string core::get_last_line_in_text_file() {
+string core::get_last_line_in_text_file(string& fileName) {
 
     ifstream fin;
-    fin.open(CLIENTSFILE);
+    fin.open(fileName);
     if (fin.is_open()) {
         fin.seekg(-3, ios_base::end);                // go to one spot before the EOF
 
@@ -71,7 +127,6 @@ string core::get_last_line_in_text_file() {
                 fin.seekg(-2, ios_base::cur);       // Move to the front of that data, then to the front of the data before it
             }
         }
-
         string lastLine;
         getline(fin, lastLine);                      // Read the current line
         
@@ -86,8 +141,8 @@ string core::get_last_line_in_text_file() {
 }
 
 // To extratct client id from a string 
-long core::get_last_Client_ID() {
-    string lastLine = get_last_line_in_text_file();
+long core::get_last_ID(string fileName) {
+    string lastLine = get_last_line_in_text_file(fileName);
     long lastId;
     string::size_type pos = 0;
     string::size_type prev = 0;
@@ -124,7 +179,11 @@ vector<LoginData> core::get_login_creditentials() {
         pos = userData.find(SEP, prev);
         data.setAccountType(userData.substr(prev, pos - prev));
         prev = pos + 1;
-        data.SetIsFristLogin(string_to_bool(userData.substr(prev)));
+		pos = userData.find(SEP, prev);
+        data.SetIsFristLogin(string_to_bool(userData.substr(prev, pos - prev)));
+		prev = pos + 1;
+		data.setIsActive(string_to_bool(userData.substr(prev)));
+
         loginData.push_back(data);
         pos = 0;
         prev = 0;
@@ -160,11 +219,11 @@ vector<Client> core::get_clients_data() {
         string clientBlance = clientData.substr(prev, pos - prev);
         client.setClientBlance(stoll(clientBlance));
         prev = pos + 1;
-        pos = clientData.find(SEP, prev);
-        client.setClientLoginUsername(clientData.substr(prev, pos - prev));
-        prev = pos + 1;
-        int isLogin = stoi(clientData.substr(prev));
-        client.setFristLogin(isLogin);
+
+        //pos = clientData.find(SEP, prev);
+        client.setClientLoginUsername(clientData.substr(prev));
+
+
 
 
         clientsData.push_back(client);
@@ -186,6 +245,7 @@ int core::get_client_index(LoginData& userLoginData, vector<Client>& clientsData
             return i;
         }    
     }
+	return -1;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -197,6 +257,7 @@ int core::wait_user_input() {
 
     while (cin.fail() || cin.eof() || inputAsInt == -1 || theInput.find_first_not_of("0123456789") != std::string::npos) {
         cin.clear();
+		cout << "INVALID INPUT\nEnter your choice: ";
         inputAsInt = get_input_to_digit(theInput, i);
     }
     return  inputAsInt;
@@ -267,36 +328,7 @@ string core::set_login_username(string& fullName) {
     clientLoginUsername += to_string(fullName.size());
 
     return clientLoginUsername;
-
 }
-// NOT USING this ...
-/*
-void core::read_text_file_then_replace_a_line(string fileName, string searchFor, string replaceThis, string replaceTo) {
-    
-    char file_name[20];
-    strcpy_s(file_name, fileName.c_str());
-
-    ifstream file(fileName);
-    ofstream TEMPFILE("temp.txt", ios_base::app);
-    string lineOfStream;
-    if (file.is_open())
-    {
-        while (getline(file, lineOfStream))
-        {   
-            if (lineOfStream.find(searchFor) != std::string::npos) {
-                
-                lineOfStream.replace(lineOfStream.find(replaceThis), replaceThis.length(), replaceTo);
-
-            }
-            TEMPFILE << lineOfStream << endl;    
-        }
-        file.close();
-        TEMPFILE.close();
-        remove(file_name);
-        rename("temp.txt", file_name);
-
-    }
-}*/
 
 void core::saveDataToClients(string fileName, vector<Client> clients) {
 
@@ -314,9 +346,8 @@ void core::saveDataToClients(string fileName, vector<Client> clients) {
         }
         myfile.close();
     }
-
 }
-// alean walker .. faded << where are you now ... Were you only imaginary >>
+
 void core::saveDataToUsers(string fileName, vector<LoginData> loginData) {
 
 	ofstream myfile(fileName);
@@ -329,12 +360,16 @@ void core::saveDataToUsers(string fileName, vector<LoginData> loginData) {
 			lineOfData += loginData.at(i).getLoginuser() + SEP;
 			lineOfData += loginData.at(i).getLoginPassword() + SEP;
 			lineOfData += loginData.at(i).getAccountType() + SEP;
-			lineOfData += bool_to_string(loginData.at(i).getIsFristLogin());
+			lineOfData += bool_to_string(loginData.at(i).getIsFristLogin()) + SEP;
+			lineOfData += bool_to_string(loginData.at(i).getIsActive());
 			myfile << lineOfData << endl;
 		}
 		myfile.close();
 	}
 }
+
+
+
 
 void core::set_account_type(int& t)
 {
@@ -361,7 +396,7 @@ void core::editClientInformation(vector<Client>& clientsData, Client& currentCli
 		editClientName(clientsData, currentClient, clientIndex);
 		break;
 	case 2:
-		resetPassword(clientsData, currentClient, clientIndex);
+		resetPassword(currentClient.getClientId());
 		break;
 	case 3:
 
@@ -372,8 +407,8 @@ void core::editClientInformation(vector<Client>& clientsData, Client& currentCli
 		exit(0);
 		break;
 	}
-
 }
+
 void core::editClientName(vector<Client>& clientsData, Client& currentClient, int& clientIndex) {
 	cout << "This client name is: " << currentClient.getClientFullName() << endl;
 	cout << "please enter the new name: ";
@@ -394,20 +429,31 @@ void core::editClientName(vector<Client>& clientsData, Client& currentClient, in
 		saveDataToClients(CLIENTSFILE, clientsData);
 	}
 	else {
-		//discard changees and return
+		return;
 	}
+	return;
 }
-void core::resetPassword(vector<Client>& clientsData, Client& currentClient, int& clientIndex) {
-	cout << "Will reset this client to defult password \"asd123\"" << endl;
-	if (areYouSure()) {
 
+void core::resetPassword(string ID) {
+	cout << "Will reset user password to defult password \"asd123\"" << endl;
+	if (areYouSure()) {
+		vector<LoginData> loginData = get_login_creditentials();
+		for (size_t i = 0; i < loginData.size(); i++) {
+			if (loginData.at(i).getID() == ID) {
+				loginData.at(i).setLoginPassword("asd123");
+				loginData.at(i).SetIsFristLogin(true);
+				saveDataToUsers(USERSFILE, loginData);
+				return;
+			}
+		}
 	}
 }
 
 bool core::areYouSure() {
 	bool sure = false;
 	cout << "Are you sure to apply this changes :" << endl;
-	cout << "1- Yes" << endl << "2- No" << endl;
+	cout << "1- Yes" << endl;
+	cout << "2- No" << endl;
 	cout << "Your Choice: ";
 	int selected_option = checkSelectionRange(2);
 	if (selected_option == 1) {
@@ -493,25 +539,22 @@ void core::transferTo(vector<Client>& clientsData, Client& currentClient, int in
     transferToId = checkId(clientsData, transferToIndex);
 }
 // change account password will use it in the 3 sections of the program "Manager - employee - client " ...
-void core::changeUserPassword(vector<LoginData>& loginData, LoginData& userLoginData) {
+void core::changeUserPassword(vector<LoginData>& loginData, LoginData& userLoginData, size_t index) {
 	string newPassword;
 	cout << "Please enter your new password: ";
 	cin.clear();
 	getline(cin, newPassword);
 	userLoginData.setLoginPassword(newPassword);
 	userLoginData.SetIsFristLogin(false);
+	loginData.at(index) = userLoginData;
 
-	for (int i = 0; i < loginData.size(); i++) {
-		if (loginData.at(i).getLoginuser() == userLoginData.getLoginuser()) {
-			cout << userLoginData.getIsFristLogin() << endl;
-
-			loginData.at(i) = userLoginData;
-		}
-	}
-	
+	//for (int i = 0; i < loginData.size(); i++) {
+	//	if (loginData.at(i).getLoginuser() == userLoginData.getLoginuser()) {
+	//		cout << userLoginData.getIsFristLogin() << endl;
+	//	}
+	//}
 	saveDataToUsers(USERSFILE, loginData);
 }
-
 
 long long core::checkBlance(Client& currentClient) {
     long long amountToTransfer;
@@ -565,15 +608,13 @@ string core::bool_to_string(bool b) {
     return r;
 }
 
-
 int core::append2Clients(string& file_name, Client& new_client)
 {
     ofstream myfile(file_name, ios::app);
     if (myfile.is_open())
     {
         myfile << new_client.getClientId() << SEP << new_client.getClientFullName() << SEP
-            << new_client.getClientBlance() << SEP << new_client.getClientUsername() << SEP
-            << new_client.isFristLogin() << endl;
+            << new_client.getClientBlance() << SEP << new_client.getClientUsername() << endl;
         myfile.close();
         return 0;
     }
@@ -591,7 +632,8 @@ int core::append2users(string& file_name, LoginData& loginData)
     if (myfile.is_open())
     {
         myfile << loginData.getID() << SEP << loginData.getLoginuser() << SEP << loginData.getLoginPassword() << SEP
-			   << loginData.getAccountType()<< SEP << bool_to_string(loginData.getIsFristLogin()) << endl;
+			<< loginData.getAccountType()<< SEP << bool_to_string(loginData.getIsFristLogin()) << SEP
+			<< bool_to_string(loginData.getIsActive()) << endl;
         myfile.close();
         return 0;
     }
@@ -616,9 +658,6 @@ int core::checkSelectionRange(int to) {
 	}
 }
 
-
-
-
 //grap all clients data from text file ............
 //this function will use it to print all clients information in employee window .. worth time to creat it :)
 vector<Employee> core::getEmployeesData() {
@@ -635,9 +674,8 @@ vector<Employee> core::getEmployeesData() {
 		Employee employee;
 		string employeeData = employeesAsStrings.at(i);
 		pos = employeeData.find(SEP, prev);
-		//Get Employee ID as int 
 		string employeeID = employeeData.substr(prev, pos - prev);
-		employee.setEmployeeId(stoi(employeeID));
+		employee.setID(stoi(employeeID));
 		prev = pos + 1;
 
 		pos = employeeData.find(SEP, prev);
@@ -645,52 +683,47 @@ vector<Employee> core::getEmployeesData() {
 		prev = pos + 1;
 
 		pos = employeeData.find(SEP, prev);
-		string employeeDepartment = employeeData.substr(prev, pos - prev);
-		employee.setEmployeeDepartment(stoi(employeeDepartment));
-
-
-
-	
+		employee.setEmployeePostion(employeeData.substr(prev, pos - prev));
 		prev = pos + 1;
-		employee.setEmployeePostion(employeeData.substr(prev));
 
+		pos = employeeData.find(SEP, prev);
+		string salary = employeeData.substr(prev, pos - prev);
+		employee.setEmployeeSalary(stoi(salary));
+		prev = pos + 1;
 
+		pos = employeeData.find(SEP, prev);
+		employee.setEmployeeAge(employeeData.substr(prev, pos - prev));
+		prev = pos + 1;
+
+		employee.setIsActive(string_to_bool(employeeData.substr(prev)));
 
 		employeesData.push_back(employee);
 		pos = 0;
 		prev = 0;
 	}
-
-
 	return employeesData;
 }
 
-
-
 //This function to add a new client.
 void core::addNewClient() {
-
 
 	Client new_client;
 	LoginData loginData;
 	string new_client_fullname;
 	string new_client_full_info;
-
-
 	long clientId = 20000000;
-
 
 	new_client_fullname = getFullName();
 	new_client.setClientFullName(new_client_fullname);
 
 	new_client.setClientLoginUsername(set_login_username(new_client_fullname));
 	// set ID for this new client ....
-	if (text_is_empty()) {
+	if (text_is_empty(CLIENTSFILE)) {
 		new_client.setClientAccountId(clientId); //if this client is the frist client in the bank
 	}
 	else {
 
-		clientId = get_last_Client_ID();
+		clientId = get_last_ID(CLIENTSFILE);
 		clientId += 1;
 		new_client.setClientAccountId(clientId);
 	}
@@ -704,20 +737,23 @@ void core::addNewClient() {
 		cout << "Please enter account opening blance: ";
 		long long blance = wait_user_input(errorMessage);
 	}
-
 	new_client.setClientBlance(blance);
 	new_client.printClientInf();
-	string s = to_string(clientId);
-	loginData.setID(s);
-	loginData.setAccountType("0");
-	loginData.setLoginUser(new_client.getClientUsername());
-	loginData.SetIsFristLogin(true);
 
-	//Write the new client data to users and clients files....
-	//Defult password set to "asd123"  
-	append2Clients(CLIENTSFILE, new_client);
-	append2users(USERSFILE, loginData);
 
+	if (areYouSure()) {
+		string s = to_string(clientId);
+		loginData.setID(s);
+		loginData.setAccountType("0");
+		loginData.setLoginUser(new_client.getClientUsername());
+		loginData.SetIsFristLogin(true);
+		loginData.setIsActive(true);
+		append2Clients(CLIENTSFILE, new_client);
+		append2users(USERSFILE, loginData);
+	}
+	else {
+		return;
+	}
 }
 
 string core::getFullName() {
@@ -725,6 +761,12 @@ string core::getFullName() {
 	cout << "Enter client full name: ";
 	fullName = cheackStringNotHasNumbers();
 	return fullName;
+}
+string core::getString(string message) {
+	string s;
+	cout << message ;
+	s = cheackStringNotHasNumbers();
+	return s;
 }
 
 string core::cheackStringNotHasNumbers() {
@@ -741,4 +783,219 @@ string core::cheackStringNotHasNumbers() {
 		getline(cin, theInput);
 	}
 	return  theInput;
+}
+
+string core::stringAddPadding(string s, rsize_t count) {
+	s.resize(count, ' ');
+	return s;
+}
+
+//This function to add a new client.
+void core::addNewEmployee(vector<Employee>& employeesData) {
+
+	Employee newEmployee;
+	LoginData loginData;
+	string employee_fullname;
+	long employeeID = 1000;
+
+	employee_fullname = getFullName();
+	newEmployee.setEmployeeName(employee_fullname);
+
+	string loginUserName = set_login_username(employee_fullname);
+
+	// set ID for this new client ....
+	if (text_is_empty(EMPLOYEEFILE)) {
+		newEmployee.setID(employeeID); //if this client is the frist client in the bank
+	}
+	else {
+		employeeID = get_last_ID(EMPLOYEEFILE);
+		employeeID += 1;
+		newEmployee.setID(employeeID);
+	}
+
+	string errorMessage = "Entry must be a number \nPlease enter employee salary: ";
+	cout << "Please enter employee salary: ";
+	int salary = wait_user_input(errorMessage);
+	if (salary < 5000) {
+		system("cls");
+		cout << "slary must be 5000 or higher" << endl;
+		cout << "Please enter employee blance: ";
+		salary = wait_user_input(errorMessage);
+	}
+	newEmployee.setEmployeeSalary(salary);
+
+	errorMessage = "Entry must be a number \nPlease Employee age: ";
+	cout << "Please enter employee age: ";
+	int age = wait_user_input(errorMessage);
+	newEmployee.setEmployeeAge(to_string(age));
+	
+	system("cls");
+
+	newEmployee.printEmployeeInf();
+	if (areYouSure()) {
+		string s = to_string(employeeID);
+		loginData.setID(s);
+		loginData.setAccountType("1");
+		loginData.setLoginUser(loginUserName);
+		loginData.SetIsFristLogin(true);
+		append2employee(newEmployee);
+		append2users(USERSFILE, loginData);
+		employeesData.push_back(newEmployee);
+	}
+	else {
+		return;
+	} 
+}
+
+int core::append2employee(Employee employee)
+{
+	ofstream myfile(EMPLOYEEFILE, ios::app);
+	if (myfile.is_open())
+	{
+		myfile << employee.getID() << SEP;
+		myfile << employee.getEmployeeName() << SEP;
+		myfile << employee.getEmployeePostion() << SEP;
+		myfile << employee.getEmployeeSalary() << SEP;
+		myfile << employee.getEmployeeAge() << SEP;
+		myfile << bool_to_string(employee.getIsFristLogin()) << endl;
+
+		myfile.close();
+		return 0;
+	}
+	else
+	{
+		cout << "Unable to open file";
+		return 1;
+	}
+
+	return 0;
+}
+
+void core::editEmployeeInformation(vector<Employee>& employeesData, Employee currentEmployee, size_t index) {
+	cout << "1- Edit Employee" << endl;
+	cout << "2- Reset password" << endl;
+	cout << "3 -Return to main menu" << endl;
+	cout << "4- exit" << endl;
+	cout << "Your choice: ";
+
+	int selected_option = checkSelectionRange(4);
+	switch (selected_option)
+	{
+	case 1:
+		editEmployee(employeesData, currentEmployee, index);
+		break;
+	case 2:
+		resetPassword(currentEmployee.getID());
+		break;
+	case 3:
+		return;
+		break;
+	case 4:
+		exit(0);
+		break;
+	}
+}
+
+void core::editEmployee(vector<Employee>& employeesData, Employee currentEmployee, size_t index) {
+	system("cls");
+	currentEmployee.printEmployeeInf();
+
+	if (!currentEmployee.getIsActive()) {
+
+	
+	}
+	 else {
+
+		cout << "1- Edit name" << endl;
+		cout << "2- Edit postion" << endl;
+		cout << "3- Edit salary" << endl;
+		cout << "4- Terminate" << endl;
+		cout << "5- Return to main Menu" << endl;
+		cout << "6- Main menu" << endl;
+		cout << "Your choice: ";
+
+		int selected_option = checkSelectionRange(6);
+		string s;
+		string message;
+		switch (selected_option)
+		{
+		case 1:
+		s = getFullName();
+		if (areYouSure()) {
+			currentEmployee.setEmployeeName(s);
+			employeesData.at(index) = currentEmployee;
+			saveAndAppend.saveDataToEmployees(employeesData);
+		}
+		break;
+		case 2:
+		message = "Please enter employee new postion: ";
+		s = getString(message);
+		system("cls");
+		currentEmployee.printEmployeeInf();
+		if (areYouSure()) {
+			currentEmployee.setEmployeePostion(s);
+			employeesData.at(index) = currentEmployee;
+			saveAndAppend.saveDataToEmployees(employeesData);
+		}
+		break;
+		case 3:
+			vector<LoginData>  *ddd = employeesData (LoginData);
+			disableUser(employeesData, currentEmployee, index)
+		case 4:
+
+		break;
+		case 5:
+		exit(0);
+		break;
+		}
+		editEmployee(employeesData, currentEmployee, index);
+	}
+}
+
+
+
+void core::disableUser(vector<LoginData> *data, LoginData userData, size_t index) {
+	//cout << "Disabling this user " << userLoginData.getLoginuser() << endl;
+	
+	if (areYouSure()) {
+		vector<LoginData> loginData = get_login_creditentials();
+		for (size_t i = 0; i < loginData.size(); i++) {
+
+			if (loginData.at(i).getID() == userData.getID()) {
+
+				loginData.at(i).setIsActive(false);
+				saveDataToUsers(USERSFILE, loginData);
+
+				size_t userToDiableID = stoll(data->at(index).getID());
+
+				
+
+				if (userData.getAccountType() == to_string(0)) {
+
+
+				}
+				if (userData.getAccountType() == to_string(1)) {
+				}
+				return;
+			}
+		}
+	}
+}
+void core::disableEmployeeProcesses(vector<LoginData>* data) {
+
+
+
+	//vector<Employee> allEmployees = getEmployeesData();
+	//allEmployees.at(index).setIsActive(false);
+	//allEmployees.at(index).setEmployeeSalary(0);
+
+	//saveAndAppend.saveDataToEmployees(allEmployees);
+
+	return;
+}
+
+
+void core::accountIsDisable() {
+	cout << "This account is disabled \nPlease contact tecnical support for more information " << endl;
+	exit(0);
 }

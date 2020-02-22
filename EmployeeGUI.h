@@ -4,22 +4,22 @@
 #include "Employee.h"
 #include "core.h"
 #include "gui.h"
+#include "SearchFor.h"
 
 class EmployeeGUI{
 private:
 	core c;
 	gui g;
-	int getEmployeeDepartment(vector<Employee>& employeesData, LoginData& userLoginData);
+	SearchFor searchFor;
 
+	Employee getEmployeeCurrentEmployee(vector<Employee>& employeesData, LoginData& userLoginData);
+	void bankDirectorOptions(vector<Employee>& employeesData);
 	void showBankDirectorOptions();
-
-	void HREmployeeOtions();
-
-	void showHREmployeeOtions();
-
+	void manageEmployees(vector<Employee>& employeesData);
+	void showManageEmployee();
 
 public:
-	void cheackEmployee(LoginData userLoginData);
-	void bankDirectorGUI(vector<Employee>& employeesData);
+	void cheackEmployee(LoginData userLoginData, vector<LoginData>& loginData, size_t index);
+
 };
 

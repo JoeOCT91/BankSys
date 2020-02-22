@@ -9,16 +9,15 @@
 class gui
 {
 public:
-	void Menu_client(LoginData& userLoginData, vector<LoginData>& loginData);
 	void Menu_manager();
 	void show_Edit_Employee();
 	void menu_Edit_Employee();
 	void Menu_employee();
-	void Menu_login();
-	LoginData login_now(vector<LoginData>& login_data);
+	LoginData login_now(vector<LoginData>& login_data, size_t& t);
 	size_t checkUsername(vector<LoginData>& login_data);
 	void checkPassword(LoginData userLoginData);
-	void show_add_new_client();
+	void Menu_login();
+	void Menu_client(LoginData& userLoginData, vector<LoginData>& loginData, size_t index);
 
 private:
 	void show_client_options(Client& currentClient);

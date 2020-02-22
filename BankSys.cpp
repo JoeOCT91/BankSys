@@ -6,34 +6,39 @@
 
 using namespace std;
 
-int main(){
-    //need to creat splash windows !!!!!!!
-	EmployeeGUI e;
-	core c;
-    gui g;
+EmployeeGUI e;
+core c;
+gui g;
 
-
-	
-
+void menu_login() {
+	system("cls");
+	size_t index = 0; 
 	vector<LoginData> loginData = c.get_login_creditentials();
-	LoginData userLoginData = g.login_now(loginData);
+
+	LoginData userLoginData = c.login_now(loginData, index);
+
 	int account_type = stoi(userLoginData.getAccountType());
 
 	c.set_account_type(account_type);
 
-	system("cls");
-
-	int selected_option = -1;
 	switch (c.get_account_type())
 	{
 	case 0:
-		g.Menu_client(userLoginData, loginData);
+		g.Menu_client(userLoginData, loginData, index);
 		break;
 	case 1:
-		e.cheackEmployee(userLoginData);
+		e.cheackEmployee(userLoginData, loginData, index);
 		break;
-
 	}
+	menu_login();
+}
+
+int main(){
+    //need to creat splash windows !!!!!!!
+
+	menu_login();
+
+
 
 }
 
