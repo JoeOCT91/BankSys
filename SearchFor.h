@@ -1,15 +1,32 @@
 #pragma once
 #include <iostream>
+#include "SaveAndAppend.h"
 #include "core.h"
 using namespace std;
 
 
 
-class SearchFor
-{
+class SearchFor{
 private:
-	void employeeFoundOptions(vector<Employee>& employeesData, Employee currentEmployee, size_t index);
+	core  c;
+	SaveAndAppend saveAndAppend;
+
+
+	void editEmployeeInformation(vector<Employee>& employeesData, size_t index);
+	void editEmployeeName(vector<Employee>& employeesData, size_t index);
+	void employeeFoundOptions(vector<Employee>& employeesData, size_t index);
+	void editEmployeePostion(vector<Employee>& employeesData, size_t index);
+	void editEmployeeSalary(vector<Employee>& employeesData, size_t index);
+	void disableProcesses(vector<Client>& clientsData, size_t index);
+	void disableProcesses(vector<Employee>& employeesData, size_t index);
+	void enableProcesses(vector<Client>& clientsData, size_t index);
+	void enableProcesses(vector<Employee>& employeesData, size_t index);
 	void employeeNotFound(vector<Employee>& employeesData);
+
+	template<typename T>
+	void disableUser(vector<T>& data, size_t index);
+	template<typename T>
+	void enableUser(vector<T>& data, size_t index);
 
 
 public:
@@ -17,7 +34,9 @@ public:
 	void searchForClient(vector<Client>& clientsData);
 	void searchByUsername(vector<Client>& clientsData);
 	void foundOptions(vector<Client>& clientsData, Client currentClient, int clientInedx);
+	void editClientInformation(vector<Client>& clientsData, size_t clientIndex);
 	void showAllEmployees(vector<Employee>& employeesData);
+
 
 	void notFound(vector<Client>& clientsData);
 	void searchByClientname(vector<Client>& clientsData);
@@ -37,7 +56,9 @@ public:
 
 
 
-protected:
-	core  c;
+
+	
+
+
 };
 

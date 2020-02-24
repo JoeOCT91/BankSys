@@ -1,4 +1,4 @@
 1000,yousef mohamed elserwey,manager,5000,30,true
-1001,yousef mohamed abas,officer,6000,25,true
-1002,salwa hamdy abou shehata,officer,8000,24,true
-1003,yousef mohamed abas elserwey,officer,6500,24,true
+1001,yousef mohamed abas elserwey,officer,6000,25,true
+1002,salwa hamdy abou shehata,officer,0,24,false
+1003,yousef mohamed abas elserwey,officer,6000,24,true

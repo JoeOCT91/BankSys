@@ -1,4 +1,8 @@
-20000000,yousef mohamed abas,50000,ymohamed19
-20000001,noha abdelrazek,10000,nabdelrazek15
-20000002,ayman mohamed bedeer,50000,amohamed20
-20000003,ayman mohamed beddeer,70000,amohamed21
+20000000,yousef mohamed abas,40000,true
+20000001,Noha AbdElrazik,60000,true
+20000002,ayman mohamed bedeer,40000,true
+20000003,ayman mohamed beddeer,4020000,false
+20000004,aya mohamed elserwey,110000,true
+20000005,amar mohamed elserwey,1570000,true
+20000006,mohamed nasr osman,6000000,true
+20000007,eslam elhotibey,50000,false

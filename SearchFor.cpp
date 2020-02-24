@@ -46,7 +46,7 @@ void SearchFor::searchByUsername(vector<Client>& clientsData) {
 	cout << searshFor;
 
 	for (int i = 0; i < clientsData.size(); i++) {
-		if (clientsData.at(i).getClientUsername() == searshFor) {
+		if (clientsData.at(i).getLoginuser() == searshFor) {
 			Client currentClient = clientsData.at(i);
 			foundOptions(clientsData, currentClient, i);
 			return;
@@ -56,44 +56,77 @@ void SearchFor::searchByUsername(vector<Client>& clientsData) {
 
 }
 
-void SearchFor::foundOptions(vector<Client>& clientsData, Client currentClient, int clientInedx) {
-	system("cls");
-	cout << "Your entry was found  " << endl;
-	currentClient.printClientInf();
-	cout << "\n1- Edit client information" << endl;
-	cout << "2- Make deposite" << endl;
-	cout << "3- Make withdrawal" << endl;
-	cout << "4- Make transfer" << endl;
-	cout << "5- Main menu" << endl;
-	cout << "6- Exit" << endl;
+void SearchFor::foundOptions(vector<Client>& clientsData, Client currentClient, int clientIndex) {
+	if (!clientsData.at(clientIndex).getIsActive()){
+		enableUser(clientsData, clientIndex);
+	}
+	else {
+		system("cls");
+		c.printClientInfo(clientsData.at(clientIndex));
+		cout << "\n1- Edit client information" << endl;
+		cout << "2- Make deposite" << endl;
+		cout << "3- Make withdrawal" << endl;
+		cout << "4- Make transfer" << endl;
+		cout << "5- Main menu" << endl;
+		cout << "6- Exit" << endl;
+		cout << "Choose your action: ";
 
-	cout << "Choose your action: ";
-	int selected_option = c.checkSelectionRange(6);
-	switch (selected_option) {
+		int selected_option = c.checkSelectionRange(6);
+		switch (selected_option) {
+		case 1:
+			editClientInformation(clientsData, clientIndex);
+			break;
+		case 2:
+			system("cls");
+			c.Deposite(clientsData, currentClient, clientIndex);
+			break;
+		case 3:
+			c.Withdrawal(clientsData, currentClient, clientIndex);
+			system("cls");
+			break;
+		case 4:
+			c.transferTo(clientsData, currentClient, clientIndex);
+			system("cls");
+			break;
+		case 5:
+			system("cls");
+			return;
+			break;
+		case 6:
+			exit(0);
+			break;
+		}
+	}
+}
+
+void SearchFor::editClientInformation(vector<Client>& clientsData, size_t clientIndex) {
+	cout << "1- Edit client name" << endl;
+	cout << "2- Reset password" << endl;
+	cout << "3- Disable client" << endl;
+	cout << "4 -Return to main menu" << endl;
+	cout << "5- exit" << endl;
+	cout << "Your choice: ";
+
+	int selected_option = c.checkSelectionRange(4);
+	switch (selected_option)
+	{
 	case 1:
-		c.editClientInformation(clientsData, currentClient, clientInedx);
+		c.editClientName(clientsData, clientIndex);
 		break;
 	case 2:
-		system("cls");
-		c.Deposite(clientsData, currentClient, clientInedx);
+		c.resetPassword(clientsData.at(clientIndex).getID());
 		break;
 	case 3:
-		c.Withdrawal(clientsData, currentClient, clientInedx);
-		system("cls");
-		break;
+		disableUser(clientsData, clientIndex);
 	case 4:
-		c.transferTo(clientsData, currentClient, clientInedx);
-		system("cls");
-		break;
-	case 5:
-		system("cls");
 		return;
 		break;
-	case 6:
+	case 5:
 		exit(0);
 		break;
 	}
 }
+
 void SearchFor::notFound(vector<Client>& clientsData) {
 	cout << "Your entry not found  " << endl;
 	cout << "1- Try Again" << endl;
@@ -143,7 +176,7 @@ void SearchFor::searchByClientnameResult(vector<Client>& clientsData, vector<int
 
 	for (int n = 0; n < resultClientsIndex.size(); n++) {
 		cout << n + 1 << "- " << clientsData.at(resultClientsIndex[n]).getClientFullName() << endl;
-		cout << "	Account ID: " << clientsData.at(resultClientsIndex[n]).getClientId() << endl << endl;
+		cout << "	Account ID: " << clientsData.at(resultClientsIndex[n]).getID() << endl << endl;
 	}
 
 	cout << "Choose from above: ";
@@ -164,7 +197,7 @@ void SearchFor::searchByClientID(vector<Client>& clientsData) {
 		searchByClientID(clientsData);
 	}
 	for (int i = 0; i < clientsData.size(); i++) {
-		if (clientID == stoll(clientsData.at(i).getClientId())) {
+		if (clientID == stoll(clientsData.at(i).getID())) {
 			Client currentClient = clientsData.at(i);
 			foundOptions(clientsData, currentClient, i);
 			return;
@@ -175,15 +208,16 @@ void SearchFor::searchByClientID(vector<Client>& clientsData) {
 }
 
 void SearchFor::showAllClients(vector<Client>& clientsData) {
+	cout << "All Clients :\n";
 	cout << c.stringAddPadding("Num", 5);
 	cout << c.stringAddPadding("ID", 10);
 	cout << c.stringAddPadding("Name", 30);
-	cout << c.stringAddPadding("Blance", 15);
+	cout << c.stringAddPadding("Blance", 15) << endl;
 
-	cout << "All Clients :\n";
+	
 	for (int i = 0; i < clientsData.size(); i++) {
 		cout << c.stringAddPadding(to_string(i + 1), 5);
-		cout << c.stringAddPadding(clientsData.at(i).getClientId(), 10);
+		cout << c.stringAddPadding(clientsData.at(i).getID(), 10);
 		cout << c.stringAddPadding(clientsData.at(i).getClientFullName(), 30);
 		cout << c.stringAddPadding(clientsData.at(i).getClientBlance(), 15) << endl;
 	}
@@ -200,7 +234,8 @@ void SearchFor::showSearchForEmployee() {
 	cout << "1- username" << endl;
 	cout << "2- Employee name" << endl;
 	cout << "3- Employee ID" << endl;
-	cout << "4- Exit" << endl;
+	cout << "4- Return" << endl;
+	cout << "5- Exit" << endl;
 	cout << "Enter your choice: ";
 }
 
@@ -210,10 +245,9 @@ void SearchFor::searchForEmployee(vector<Employee>& employeesData) {
 
 	showSearchForEmployee();
 
-	int selected_option = c.checkSelectionRange(4);
+	int selected_option = c.checkSelectionRange(5);
 
-	switch (selected_option)
-	{
+	switch (selected_option){
 	case 1:
 		system("cls");
 		//searchByEmployeeUsername(employeesData);
@@ -228,9 +262,15 @@ void SearchFor::searchForEmployee(vector<Employee>& employeesData) {
 		searchByEmployeeID(employeesData);
 		break;
 	case 4:
+		return;
+		break;
+	
+	case 5:
 		exit(0);
+		break;
 	}
 }
+
 void SearchFor::searchByEmployeeID(vector<Employee>& employeesData) {
 	int employeeId;
 
@@ -244,7 +284,7 @@ void SearchFor::searchByEmployeeID(vector<Employee>& employeesData) {
 	for (int i = 0; i < employeesData.size(); i++) {
 		if (to_string(employeeId) == employeesData.at(i).getID()) {
 			Employee currentEmployee = employeesData.at(i);
-			employeeFoundOptions(employeesData, currentEmployee, i);
+			employeeFoundOptions(employeesData, i);
 			return;
 		}
 	}
@@ -252,31 +292,38 @@ void SearchFor::searchByEmployeeID(vector<Employee>& employeesData) {
 	searchByEmployeeID(employeesData);
 }
 
-void SearchFor::employeeFoundOptions(vector<Employee>& employeesData, Employee currentEmployee, size_t index) {
+void SearchFor::employeeFoundOptions(vector<Employee>& employeesData, size_t index) {
 		system("cls");
-		currentEmployee.printEmployeeInf();
-		cout << "1- Edit employee information" << endl;
-		cout << "4- Main menu" << endl;
-		cout << "5- Exit" << endl;
 
-		cin.clear();
-		int selected_option = c.checkSelectionRange(5);
+		if (!employeesData.at(index).getIsActive()) {
+			c.accountReactive();
+			enableUser(employeesData, index);
+		}
+		else {
+			c.printEmployeeInfo(employeesData.at(index));
+			cout << "1- Edit employee information" << endl;
+			cout << "2- Main menu" << endl;
+			cout << "3- Exit" << endl;
+			cout << "Choose your action: ";
 
-		switch (selected_option) {
-		case 1:
-			system("cls");
-			c.editEmployeeInformation(employeesData, currentEmployee, index);
-			break;
-		case 2:
-			system("cls");
-			return;
-			break;
-		case 3:
-			exit(0);
-			break;
+			cin.clear();
+			int selected_option = c.checkSelectionRange(3);
+
+			switch (selected_option) {
+			case 1:
+				system("cls");
+				editEmployeeInformation(employeesData, index);
+				break;
+			case 2:
+				system("cls");
+				return;
+				break;
+			case 3:
+				exit(0);
+				break;
+			}
 		}
 }
-
 
 void SearchFor::employeeNotFound(vector<Employee>& employeesData) {
 	cout << "Your entry not found  " << endl;
@@ -303,24 +350,183 @@ void SearchFor::employeeNotFound(vector<Employee>& employeesData) {
 }
 
 void SearchFor::showAllEmployees(vector<Employee>& employeesData) {
+	system("cls");
 	cout << c.stringAddPadding("ID", 6);
 	cout << c.stringAddPadding("Name", 35);
 	cout << c.stringAddPadding("Postion", 15);
-	cout << c.stringAddPadding("Salary", 7);
-	cout << c.stringAddPadding("age", 5) << endl;
+	cout << c.stringAddPadding("Salary", 8);
+	cout << c.stringAddPadding("age", 6);
+	cout << c.stringAddPadding("Employee status", 16) << endl;
 	
 
 	for (int i = 0; i < employeesData.size(); i++) {
 		cout << c.stringAddPadding(employeesData.at(i).getID(), 6);
 		cout << c.stringAddPadding(employeesData.at(i).getEmployeeName(), 35);
 		cout << c.stringAddPadding(employeesData.at(i).getEmployeePostion(), 15);
-		cout << c.stringAddPadding(employeesData.at(i).getEmployeeSalary(), 7);
-		cout << c.stringAddPadding(employeesData.at(i).getEmployeeAge(), 5) << endl;
+		cout << c.stringAddPadding(employeesData.at(i).getEmployeeSalary(), 8);
+		cout << c.stringAddPadding(employeesData.at(i).getEmployeeAge(), 6);
+		cout << c.stringAddPadding(c.bool_to_string(employeesData.at(i).getIsActive()), 16) << endl;
+
 	}
 	cout << "Choose from above: ";
 	size_t selected_option = c.checkSelectionRange(employeesData.size());
 	size_t index = selected_option - 1;
 	Employee currentEmployee = employeesData.at(index);
-	employeeFoundOptions(employeesData, currentEmployee, index);
+	employeeFoundOptions(employeesData, index);
 
+}
+
+
+void SearchFor::editEmployeeInformation(vector<Employee>& employeesData, size_t index) {
+	system("cls");
+	c.printEmployeeInfo(employeesData.at(index));
+
+	cout << "1- Edit name" << endl;
+	cout << "2- Edit postion" << endl;
+	cout << "3- Edit salary" << endl;
+	cout << "4- Reset password" << endl;
+	cout << "5- Terminate" << endl;
+	cout << "6- Return to main Menu" << endl;
+	cout << "7- Main menu" << endl;
+	cout << "Your choice: ";
+
+	int selected_option = c.checkSelectionRange(7);
+	switch (selected_option)
+	{
+	case 1:
+		editEmployeeName(employeesData, index);
+		break;
+	case 2:
+		editEmployeePostion(employeesData, index);
+		break;
+	case 3:
+		editEmployeeSalary(employeesData, index);
+		break;
+	case 4:
+		c.resetPassword(employeesData.at(index).getID());
+		break;
+	case 5:
+		disableUser(employeesData, index);
+		return;
+		break;
+	case 6:
+		return;
+		break;
+	case 7:
+		exit(0);
+		break;
+	}
+	editEmployeeInformation(employeesData, index);
+}
+
+void SearchFor::editEmployeeName(vector<Employee>& employeesData, size_t index) {
+	string s = c.getFullName();
+	system("cls");
+	employeesData.at(index).printEmployeeInf();
+	if (c.areYouSure()) {
+		employeesData.at(index).setEmployeeName(s);
+		saveAndAppend.saveDataToEmployees(employeesData);
+	}
+}
+
+void SearchFor::editEmployeePostion(vector<Employee>& employeesData, size_t index) {
+	string  message = "Please enter employee new postion: ";
+	string s = c.getString(message);
+	system("cls");
+	employeesData.at(index).printEmployeeInf();
+	if (c.areYouSure()) {
+		employeesData.at(index).setEmployeePostion(s);
+		saveAndAppend.saveDataToEmployees(employeesData);
+		
+	}
+}
+
+void SearchFor::editEmployeeSalary(vector<Employee>& employeesData, size_t index) {
+	system("cls");
+	string  message = "INVALID INPUT\nenter employee new salary: ";
+	cout << "Enter employee new salary: ";
+	int salary = c.wait_user_input(message);
+	system("cls");
+	Employee temp = employeesData.at(index);
+	temp.setEmployeeSalary(salary);
+	c.printEmployeeInfo(temp);
+	if (c.areYouSure()) {
+		employeesData.at(index).setEmployeeSalary(salary);
+		saveAndAppend.saveDataToEmployees(employeesData);
+	}
+}
+
+template <typename T>
+void SearchFor::disableUser(vector<T>& data, size_t index) {
+
+	if (c.areYouSure()) {
+		vector<LoginData> loginData = c.get_login_creditentials();
+		for (size_t i = 0; i < loginData.size(); i++) {
+			cout << data.at(index).getID() << endl;
+			if (loginData.at(i).getID() == data.at(index).getID()) {
+				loginData.at(i).setIsActive(false);
+				saveAndAppend.saveDataToUsers(loginData);
+				disableProcesses(data, index);
+
+				return;
+			}
+		}
+	}
+}
+
+void SearchFor::disableProcesses(vector<Employee>& employeesData, size_t index) {
+	cout << "we are hereeeeee" << endl;
+
+	employeesData.at(index).setEmployeeSalary(0);
+	employeesData.at(index).setIsActive(false);
+
+	saveAndAppend.saveDataToEmployees(employeesData);
+	return;
+}
+void SearchFor::disableProcesses(vector<Client>& clientsData, size_t index) {
+	cout << "we are here" << endl;
+	clientsData.at(index).setClientBlance(0);
+	clientsData.at(index).setIsActive(false);
+	c.areYouSure();
+	saveAndAppend.saveDataToClients(clientsData);
+
+	return;
+}
+
+template <typename T>
+void SearchFor::enableUser(vector<T>& data, size_t index) {
+	cout << "This user is disable, reactiveing this user ";
+	if (c.areYouSure()) {
+		vector<LoginData> loginData = c.get_login_creditentials();
+		for (size_t i = 0; i < loginData.size(); i++) {
+
+			if (loginData.at(i).getID() == data.at(index).getID()) {
+
+				loginData.at(i).setIsActive(true);
+				saveAndAppend.saveDataToUsers(loginData);
+				enableProcesses(data, index);
+
+				return;
+			}
+		}
+	}
+}
+
+void SearchFor::enableProcesses(vector<Employee>& employeesData, size_t index) {
+
+	employeesData.at(index).setIsActive(true);
+	editEmployeeSalary(employeesData, index);
+
+	saveAndAppend.saveDataToEmployees(employeesData);
+	return;
+}
+
+void SearchFor::enableProcesses(vector<Client>& clientsData, size_t index) {
+
+	long long blance = c.getClientNewBlance();
+	clientsData.at(index).setIsActive(true);
+	clientsData.at(index).setClientBlance(blance);
+	saveAndAppend.saveDataToClients(clientsData);
+
+	return;
 }

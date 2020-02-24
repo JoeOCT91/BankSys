@@ -24,7 +24,7 @@ void menu_login() {
 	switch (c.get_account_type())
 	{
 	case 0:
-		g.Menu_client(userLoginData, loginData, index);
+		g.clientOptions(userLoginData, loginData, index);
 		break;
 	case 1:
 		e.cheackEmployee(userLoginData, loginData, index);

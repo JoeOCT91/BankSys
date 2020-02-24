@@ -58,7 +58,7 @@ public:
 	}
 	void printEmployeeInf() {
 
-		cout << "Employee Full information:" << endl;
+		cout << "Employee Full information" << endl;
 		cout << "Employee name: " << mFullName << endl;
 		cout << "Employee postion: " << mEmployeePostion << endl;
 		cout << "Employee salary: " << mSalary << endl;

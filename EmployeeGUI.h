@@ -14,9 +14,12 @@ private:
 
 	Employee getEmployeeCurrentEmployee(vector<Employee>& employeesData, LoginData& userLoginData);
 	void bankDirectorOptions(vector<Employee>& employeesData);
-	void showBankDirectorOptions();
 	void manageEmployees(vector<Employee>& employeesData);
+	void showBankDirectorOptions();
+	void showEmployeeOptions();
 	void showManageEmployee();
+	void employeeOtions();
+
 
 public:
 	void cheackEmployee(LoginData userLoginData, vector<LoginData>& loginData, size_t index);
